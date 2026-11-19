@@ -1,6 +1,5 @@
-@import "tailwindcss";
-
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;
+@import "tailwindcss";500;600;700&family=DM+Serif+Display:ital@0;1&display=swap");
 :root {
   font-family: "DM Sans", sans-serif;
   color: #313a35;
@@ -1173,4 +1172,64 @@ progress {
 .avatar-confused .eyebrows {
   transform: translateY(-2px) rotate(-2deg);
   transform-origin: 150px 140px;
+}
+
+.scene-artwork {
+  position: absolute;
+  inset: -3%;
+  width: 106%;
+  height: 106%;
+  transform: translate(var(--scene-x, 0), var(--scene-y, 0));
+  transition: transform 0.3s ease-out;
+}
+.scene-star {
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+.scene-rain-streak {
+  animation: rainfall 1.3s linear infinite;
+}
+.scene-leaf {
+  animation: leaf-sway 4s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+@keyframes twinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes rainfall {
+  from {
+    translate: 0 -20px;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  to {
+    translate: -8px 35px;
+    opacity: 0;
+  }
+}
+@keyframes leaf-sway {
+  from {
+    rotate: -2deg;
+  }
+  to {
+    rotate: 3deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-artwork,
+  .scene-star,
+  .scene-rain-streak,
+  .scene-leaf,
+  .mouth {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
