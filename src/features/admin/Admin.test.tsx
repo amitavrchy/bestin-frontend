@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, it } from "vitest";
-import { BookEditor } from "./Admin";
+import { BookEditor } from "./AdminPages";
 afterEach(cleanup);
 function renderEditor() {
   return render(

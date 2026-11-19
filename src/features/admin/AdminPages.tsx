@@ -1,9 +1,9 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, json, upload } from "../api";
-import type { Book, User } from "../types";
-import { Cover } from "./Common";
+import { api, json, upload } from "../../api";
+import type { Book, User } from "../../types";
+import { Cover } from "../../pages/Common";
 type Stats = {
   books: number;
   ready_books: number;

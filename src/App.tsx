@@ -8,14 +8,14 @@ import {
   LibraryPage,
   SettingsPage,
 } from "./pages/Common";
-import { ChatPage } from "./pages/Chat";
+import { ChatPage } from "./features/chat/ChatPage";
 import {
   AdminBooks,
   BookEditor,
   Dashboard,
   Questions,
   UsersPage,
-} from "./pages/Admin";
+} from "./features/admin/AdminPages";
 class ErrorBoundary extends Component<
   { children: ReactNode },
   { failed: boolean }
