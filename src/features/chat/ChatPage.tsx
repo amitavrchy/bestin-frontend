@@ -42,6 +42,8 @@ export function ChatPage() {
   const [speech, setSpeech] = useState<Speech | null>(null);
   const [speechMessage, setSpeechMessage] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [greetingHappy, setGreetingHappy] = useState(false);
+  const greetingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [time, setTime] = useState(0);
   const [quick, setQuick] = useState(false);
   const recorder = useRef<MediaRecorder | null>(null);
@@ -74,6 +76,7 @@ export function ChatPage() {
   useEffect(
     () => () => {
       if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
+      if (greetingTimer.current) clearTimeout(greetingTimer.current);
       recognitionRef.current?.stop();
       if (recorder.current?.state === "recording") recorder.current.stop();
     },
@@ -90,7 +93,13 @@ export function ChatPage() {
     a.ontimeupdate = () => setTime(a.currentTime);
     a.onplay = () => setPlaying(true);
     a.onpause = () => setPlaying(false);
-    a.onended = () => setPlaying(false);
+    a.onended = () => {
+      setPlaying(false);
+      if (messageId === null) {
+        setGreetingHappy(true);
+        greetingTimer.current = setTimeout(() => setGreetingHappy(false), 2500);
+      }
+    };
     setSpeech(s);
     setSpeechMessage(messageId);
     setTime(0);
@@ -120,6 +129,8 @@ export function ChatPage() {
   async function ask(question: string) {
     if (!question.trim() || busy) return;
     speechRequest.current += 1;
+    setGreetingHappy(false);
+    if (greetingTimer.current) clearTimeout(greetingTimer.current);
     audio?.pause();
     setText("");
     setError("");
@@ -288,7 +299,7 @@ export function ChatPage() {
                   ? "thinking"
                   : playing
                     ? "speaking"
-                    : "idle"
+                    : greetingHappy ? "happy" : "idle"
             }
           >
             {settings.captions && playing && speech?.words.length ? <div className="stage-subtitles" aria-live="off">{speech.words.filter(word => time >= word.start - 1.5 && time <= word.end + 1.5).map((word, index) => <span className={time >= word.start && time <= word.end ? "active" : ""} key={`${word.start}-${index}`}>{word.word} </span>)}</div> : null}
