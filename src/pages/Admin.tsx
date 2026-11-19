@@ -159,11 +159,18 @@ export function BookEditor({ isNew = false }: { isNew?: boolean }) {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    if (!String(form.get("title") || "").trim()) {
+      setError("Enter a title.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
       if (isNew) {
         if (!file) throw new Error("Choose a book file first.");
+        if (!/\.(pdf|epub|txt|md)$/i.test(file.name))
+          throw new Error("Choose a PDF, EPUB, TXT or Markdown file.");
+        if (!file.size) throw new Error("The book file is empty.");
         form.set("file", file);
         if (cover) form.set("cover", cover);
         await upload("/api/admin/books", form, setProgress);
