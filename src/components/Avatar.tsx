@@ -118,6 +118,7 @@ export function Avatar({
       clearTimeout(timer);
     };
   }, []);
+  const isRafi = character === "rafi";
   const outfit =
     character === "rafi" || character === "rose"
       ? "#ad6b70"
@@ -133,7 +134,7 @@ export function Avatar({
       className={`avatar avatar-${expression}`}
       viewBox="0 0 300 360"
       role="img"
-      aria-label={`Bestin, ${expression}`}
+      aria-label={`${isRafi ? "Rafi" : "Bestin"}, ${expression}`}
     >
       <defs>
         <linearGradient id="skin" x2="1" y2="1">
@@ -164,10 +165,32 @@ export function Avatar({
         />
         <path d="M130 280 Q150 310 170 280 L162 317 H138Z" fill="#e6be89" />
         <circle cx="150" cy="319" r="4" fill="#dfc59c" />
+        <path
+          d="M43 337 Q64 295 96 286 M257 337 Q236 295 204 286 M107 299 L99 350 M193 299 L201 350"
+          fill="none"
+          stroke="#344f49"
+          strokeWidth="2"
+          opacity=".25"
+        />
+        <path
+          d="M105 270 L126 292 L113 304 L99 284 M195 270 L174 292 L187 304 L201 284"
+          fill="#f9e9d1"
+        />
+        <path
+          d="M121 259 Q150 278 179 259"
+          fill="none"
+          stroke="#b97b69"
+          opacity=".4"
+          strokeWidth="3"
+        />
       </g>
       <g className="avatar-head">
         <path
-          d="M76 149 Q62 40 150 35 Q238 40 224 149 L230 218 Q214 259 182 256 L118 256 Q85 259 70 218Z"
+          d={
+            isRafi
+              ? "M79 156 Q67 56 128 43 Q205 23 222 105 L220 174 Q214 195 207 200 L93 200 Q81 181 79 156Z"
+              : "M76 149 Q62 40 150 35 Q238 40 224 149 L230 218 Q214 259 182 256 L118 256 Q85 259 70 218Z"
+          }
           fill="url(#hair)"
         />
         <ellipse cx="91" cy="168" rx="15" ry="24" fill="#dba284" />
@@ -177,7 +200,11 @@ export function Avatar({
           fill="url(#skin)"
         />
         <path
-          d="M91 133 Q80 60 132 48 Q193 25 211 94 L210 133 Q193 122 188 88 Q155 121 97 113Z"
+          d={
+            isRafi
+              ? "M91 133 Q76 84 105 59 Q123 41 143 48 Q163 29 180 47 Q209 43 214 82 L210 132 Q198 112 195 99 Q174 111 157 98 Q128 118 98 109Z"
+              : "M91 133 Q80 60 132 48 Q193 25 211 94 L210 133 Q193 122 188 88 Q155 121 97 113Z"
+          }
           fill="url(#hair)"
         />
         <path
@@ -187,6 +214,19 @@ export function Avatar({
           opacity=".35"
           strokeWidth="4"
           strokeLinecap="round"
+        />
+        <path
+          d="M96 161 Q100 188 107 206 M204 161 Q200 188 193 206"
+          fill="none"
+          stroke="#fff0d6"
+          strokeWidth="3"
+          opacity=".35"
+        />
+        <path
+          d="M87 163 Q91 152 96 164 M213 163 Q209 152 204 164"
+          fill="none"
+          stroke="#b97d6b"
+          strokeWidth="2"
         />
         <path
           className="eyebrows"
@@ -222,6 +262,13 @@ export function Avatar({
             </>
           )}
         </g>
+        <path
+          d="M112 147 Q124 139 136 147 M164 147 Q176 139 188 147"
+          fill="none"
+          stroke="#65423b"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
         <path
           d="M149 155 Q145 173 151 175 L155 174"
           fill="none"
