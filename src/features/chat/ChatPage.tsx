@@ -16,17 +16,6 @@ import { Stage } from "../../components/Stage";
 import { useSettings } from "../../lib/contexts";
 import type { Book, Conversation, Message, Speech } from "../../lib/types";
 import { SettingsForm } from "../../pages/Common";
-type Recognition = {
-  start: () => void;
-  stop: () => void;
-  onresult:
-    | ((event: {
-        results: ArrayLike<ArrayLike<{ transcript: string }>>;
-      }) => void)
-    | null;
-  onerror: (() => void) | null;
-  onend: (() => void) | null;
-};
 export function ChatPage() {
   const { id } = useParams();
   const bookId = Number(id);
@@ -47,7 +36,11 @@ export function ChatPage() {
   const [time, setTime] = useState(0);
   const [quick, setQuick] = useState(false);
   const recorder = useRef<MediaRecorder | null>(null);
-  const recognitionRef = useRef<Recognition | null>(null);
+  const cancelled = useRef(false);
+  const started = useRef(0);
+  const [elapsed, setElapsed] = useState(0);
+  const [transcribing, setTranscribing] = useState(false);
+  const [voiceMessages, setVoiceMessages] = useState<number[]>([]);
   const audioUrl = useRef<string | null>(null);
   const greeted = useRef(false);
   const speechRequest = useRef(0);
@@ -77,7 +70,7 @@ export function ChatPage() {
     () => () => {
       if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
       if (greetingTimer.current) clearTimeout(greetingTimer.current);
-      recognitionRef.current?.stop();
+      cancelled.current = true;
       if (recorder.current?.state === "recording") recorder.current.stop();
     },
     [],
@@ -169,82 +162,83 @@ export function ChatPage() {
       setBusy(false);
     }
   }
-  function browserRecognition() {
-    const Constructor =
-      (
-        window as unknown as {
-          SpeechRecognition?: new () => Recognition;
-          webkitSpeechRecognition?: new () => Recognition;
-        }
-      ).SpeechRecognition ||
-      (window as unknown as { webkitSpeechRecognition?: new () => Recognition })
-        .webkitSpeechRecognition;
-    if (!Constructor) {
-      setError(
-        "Speech recognition is unavailable in this browser. Please type your question.",
-      );
-      return;
-    }
-    const recognition = new Constructor();
-    recognitionRef.current = recognition;
-    recognition.onresult = (e) => {
-      setText(e.results[0][0].transcript);
+  useEffect(() => {
+    if (!recording) return;
+    const timer = setInterval(() => {
+      const seconds = Math.floor((Date.now() - started.current) / 1000);
+      setElapsed(seconds);
+      if (seconds >= 60 && recorder.current?.state === "recording") recorder.current.stop();
+    }, 200);
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") cancelRecording();
     };
-    recognition.onerror = () =>
-      setError("Could not recognize speech. Please try typing.");
-    recognition.onend = () => {
-      recognitionRef.current = null;
-      setRecording(false);
-    };
-    setRecording(true);
-    recognition.start();
+    window.addEventListener("keydown", escape);
+    return () => { clearInterval(timer); window.removeEventListener("keydown", escape); };
+  }, [recording]);
+  function cancelRecording() {
+    cancelled.current = true;
+    if (recorder.current?.state === "recording") recorder.current.stop();
+  }
+  async function sendVoice(blob: Blob) {
+    setBusy(true);
+    setTranscribing(true);
+    setError("");
+    speechRequest.current += 1;
+    audio?.pause();
+    try {
+      let cid = conversation;
+      if (!cid) {
+        const c = await api<Conversation>("/api/conversations", { method: "POST", body: json({ book_id: bookId }) });
+        cid = c.id;
+        setConversation(cid);
+      }
+      const form = new FormData();
+      const extension = blob.type.includes("mp4") ? "m4a" : blob.type.includes("ogg") ? "ogg" : "webm";
+      form.append("file", blob, `recording.${extension}`);
+      form.append("speak", String(!settings.mute));
+      form.append("voice", settings.voice);
+      form.append("style", settings.style);
+      const result = await api<{ user_message: Message; assistant_message: Message; speech: Speech | null; transcript: string }>(`/api/conversations/${cid}/ask-voice`, { method: "POST", body: form });
+      setTranscribing(false);
+      setVoiceMessages(ids => [...ids, result.user_message.id]);
+      await client.invalidateQueries({ queryKey: ["conversation", cid] });
+      await client.invalidateQueries({ queryKey: ["conversations", bookId] });
+      if (result.speech) playSpeech(result.speech, true, result.assistant_message.id);
+    } catch (e) {
+      setError(e instanceof ApiError && e.status === 422 && e.message === "no_speech" ? "I didn't catch that — try again" : e instanceof Error ? e.message : "Could not process your recording.");
+    } finally { setTranscribing(false); setBusy(false); }
   }
   async function toggleRecording() {
-    if (recording) {
-      if (recorder.current) recorder.current.stop();
-      else recognitionRef.current?.stop();
-      return;
-    }
-    if (
-      !navigator.mediaDevices?.getUserMedia ||
-      typeof MediaRecorder === "undefined"
-    ) {
-      browserRecognition();
-      return;
-    }
+    if (recording) { if (recorder.current?.state === "recording") recorder.current.stop(); return; }
+    if (busy) return;
+    setError("");
+    if (!window.isSecureContext && location.hostname !== "localhost") { setError("Microphone access requires a secure connection. Please type your question."); return; }
+    if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices?.getUserMedia) { setError("Recording is not supported in this browser. Please type your question."); return; }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const r = new MediaRecorder(stream);
+      const mime = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"].find(type => MediaRecorder.isTypeSupported(type));
+      let r: MediaRecorder;
+      try { r = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream); }
+      catch (e) { stream.getTracks().forEach(t => t.stop()); throw e; }
       recorder.current = r;
+      cancelled.current = false;
       const chunks: Blob[] = [];
-      r.ondataavailable = (e) => chunks.push(e.data);
+      r.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
       r.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop());
+        stream.getTracks().forEach(t => t.stop());
         setRecording(false);
         recorder.current = null;
-        const form = new FormData();
-        form.append(
-          "file",
-          new Blob(chunks, { type: r.mimeType || "audio/webm" }),
-          "recording.webm",
-        );
-        api<{ text: string }>("/api/stt", { method: "POST", body: form })
-          .then((result) => setText(result.text))
-          .catch((e) => {
-            if (
-              e instanceof ApiError &&
-              e.status === 503 &&
-              e.message === "stt_unavailable"
-            )
-              browserRecognition();
-            else
-              setError(e instanceof Error ? e.message : "Transcription failed");
-          });
+        if (cancelled.current) return;
+        if (Date.now() - started.current < 500) { setError("Recording was too short. Please try again."); return; }
+        void sendVoice(new Blob(chunks, { type: r.mimeType || "audio/webm" }));
       };
+      started.current = Date.now();
+      setElapsed(0);
       r.start();
       setRecording(true);
-    } catch {
-      browserRecognition();
+    } catch (e) {
+      const name = typeof e === "object" && e !== null && "name" in e ? String(e.name) : "";
+      setError(name === "NotAllowedError" || name === "PermissionDeniedError" ? "Microphone access was blocked. Allow it in your browser's site settings, or type your question." : name === "NotFoundError" || name === "DevicesNotFoundError" ? "No microphone found. Connect one or type your question." : "Could not start recording. Please type your question.");
     }
   }
   async function removeConversation(cid: number) {
@@ -376,7 +370,7 @@ export function ChatPage() {
         </div>
         <ChatTranscript messages={messages} book={book} busy={busy} captions={settings.captions}
           speech={speech} speechMessage={speechMessage} playing={playing} time={time}
-          error={error} recording={recording} text={text} setText={setText}
+          error={error} recording={recording} elapsed={elapsed} transcribing={transcribing} voiceMessages={voiceMessages} cancelRecording={cancelRecording} text={text} setText={setText}
           toggleRecording={toggleRecording} ask={ask} />
       </div>
     </div>

@@ -5,10 +5,10 @@ import type { Book, Message, Speech } from "../../lib/types";
 type Props = {
   messages: Message[]; book?: Book; busy: boolean; captions: boolean;
   speech: Speech | null; speechMessage: number | null; playing: boolean; time: number;
-  error: string; recording: boolean; text: string;
+  error: string; recording: boolean; text: string; elapsed: number; transcribing: boolean; voiceMessages: number[]; cancelRecording: () => void;
   setText: (text: string) => void; toggleRecording: () => Promise<void>; ask: (question: string) => Promise<void>;
 };
-export function ChatTranscript({ messages, book, busy, captions, speech, speechMessage, playing, time, error, recording, text, setText, toggleRecording, ask }: Props) {
+export function ChatTranscript({ messages, book, busy, captions, speech, speechMessage, playing, time, error, recording, elapsed, transcribing, voiceMessages, cancelRecording, text, setText, toggleRecording, ask }: Props) {
   return (
         <div className="transcript">
           <div className="transcript-header">
@@ -44,7 +44,7 @@ export function ChatTranscript({ messages, book, busy, captions, speech, speechM
             {messages.map((m) => (
               <div className={`message ${m.role}`} key={m.id}>
                 <div className="message-label">
-                  {m.role === "assistant" ? "✳  BESTIN" : "YOU"}
+                  {m.role === "assistant" ? "✳  BESTIN" : <>YOU {voiceMessages.includes(m.id) && <Mic size={12} aria-label="Spoken question" />}</>}
                 </div>
                 <div className="bubble">
                   {captions || m.role === "user" ? (
@@ -95,7 +95,7 @@ export function ChatTranscript({ messages, book, busy, captions, speech, speechM
               <div className="message assistant">
                 <div className="message-label">✳ BESTIN</div>
                 <div className="bubble">
-                  Looking through the pages<span className="dots">...</span>
+                  {transcribing ? "Transcribing…" : <>Looking through the pages<span className="dots">...</span></>}
                 </div>
               </div>
             )}
@@ -112,31 +112,15 @@ export function ChatTranscript({ messages, book, busy, captions, speech, speechM
                 {error}
               </p>
             )}
-            <div className="composer-input">
-              <button
-                type="button"
-                className={recording ? "recording" : ""}
-                onClick={() => void toggleRecording()}
-                aria-label={recording ? "Stop recording" : "Record question"}
-              >
-                <Mic size={20} />
-              </button>
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={
-                  recording ? "Listening…" : "Ask a question about this book…"
-                }
-                aria-label="Your question"
-              />
-              <button
-                className="send"
-                disabled={busy || !text.trim()}
-                aria-label="Send question"
-              >
-                <Send size={18} />
-              </button>
-            </div>
+            {recording ? <div className="recording-bar" role="status">
+              <span className="recording-dot" /> Recording {String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}
+              <button type="button" onClick={cancelRecording}>Cancel</button>
+              <button type="button" onClick={() => void toggleRecording()}>Send / Stop</button>
+            </div> : <div className="composer-input">
+              <button type="button" className="mic-button" onClick={() => void toggleRecording()} disabled={busy} aria-label="Ask by voice" title="Ask by voice"><Mic size={20} /></button>
+              <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask a question about this book…" aria-label="Your question" />
+              <button className="send" disabled={busy || !text.trim()} aria-label="Send question"><Send size={18} /></button>
+            </div>}
             <small>
               Bestin answers from your book. Check sources for context.
             </small>
