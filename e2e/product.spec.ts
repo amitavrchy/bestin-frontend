@@ -39,6 +39,7 @@ test('admin adds a book and a reader talks to it', async ({ page, request }) => 
   await expect(page.getByRole('heading', { name: title })).toBeVisible();
   await screenshot(page, 'library');
   await page.getByRole('heading', { name: title }).click();
+  await expect(page.getByRole('button', { name: 'Ask by voice' })).toBeVisible();
   await page.getByLabel('Your question').fill('Why did Mira light the lanterns?');
   await page.getByLabel('Send question').click();
   await expect(page.locator('.message.assistant .citations summary').first()).toBeVisible({ timeout: 180_000 });

@@ -245,3 +245,62 @@
 .avatar-head, .avatar-speaking .avatar-head { animation: none; transition: none; }
 .avatar-speaking .eyebrows { animation: none; }
 @media (max-width: 800px) { .chat-stage .stage { height: 45vh; min-height: 300px; max-height: 500px; aspect-ratio: auto; } }
+.composer-input .mic-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 42px; width: 42px; height: 42px; min-width: 42px; padding: 0; margin: 0; line-height: 0; box-sizing: border-box; border-radius: 50%; background: #dce8de; color: #304f3d; }
+.composer-input .mic-button svg { display: block; flex: none; margin: 0; }
+.composer-input .mic-button:hover { background: #c4d8c8; }
+.recording-bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 13px; }
+.recording-bar button:first-of-type { margin-left: auto; }
+.recording-dot { width: 10px; height: 10px; flex: 0 0 10px; border-radius: 50%; background: #c53939; animation: recording-pulse 1s infinite alternate; }
+@keyframes recording-pulse { to { opacity: .35; transform: scale(.8); } }
+
+.voice-gate-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #1e2527a0;
+}
+.voice-gate-dialog {
+  width: min(420px, 100%);
+  padding: 32px 28px 24px;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+  color: var(--text);
+  outline: none;
+}
+.voice-gate-dialog h2 {
+  margin: 0 0 10px;
+  font-family: "DM Serif Display", Georgia, serif;
+  font-size: 26px;
+  font-weight: 400;
+}
+.voice-gate-dialog p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.voice-gate-circle {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  border: 5px solid #dce8de;
+  border-top-color: var(--green);
+  box-sizing: border-box;
+  animation: ui-spin 0.8s linear infinite;
+}
+.voice-gate-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .voice-gate-circle {
+    animation-duration: 2s;
+  }
+}

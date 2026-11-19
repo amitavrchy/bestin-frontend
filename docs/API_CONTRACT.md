@@ -20,7 +20,7 @@ Browser -> bestin-backend `/api/*` (JWT) -> bestin-ai `/v1/*` (shared secret hea
   If the chosen provider fails (429/402/5xx) fall back along the chain. If none works, return an "extractive" answer built from the top retrieved chunks (so the product never hard-fails).
 - Embeddings: local `fastembed` (`BAAI/bge-small-en-v1.5`, no key). Optional `openai` / `gemini` embeddings. Store which embedding model built a collection; re-ingest needed if changed.
 - Vector store: Chroma persistent client, one collection per book (`book_<id>`), cosine.
-- STT: `groq` whisper-large-v3-turbo (GROQ_API_KEY) or `openai`. If no key: endpoint returns 503 `{"detail":"stt_unavailable"}`; the frontend then uses browser Web Speech API.
+- STT: `auto` tries configured Groq, then OpenAI, then local faster-whisper (CPU int8, `LOCAL_STT_MODEL=base.en`). Local needs no key; model download is required once. `LOCAL_STT_ENABLED=false` disables it.
 - TTS: `edge-tts` (KEYLESS, Microsoft neural voices) with `boundary="WordBoundary"` for word timings (offsets are 100-ns ticks). Optional `openai` TTS.
 - Lip sync: visemes in Rhubarb shape set A,B,C,D,E,F,G,H,X. Backends: `rhubarb` (binary in tools/bin, downloaded by a script, uses audio converted to WAV via imageio-ffmpeg), `words` (word timings + grapheme->phoneme-ish heuristic -> visemes), `heuristic` (text-only, evenly spaced). `LIPSYNC_BACKEND=auto` = rhubarb if available else words else heuristic.
 
@@ -43,7 +43,7 @@ Errors   = FastAPI style { "detail": str | [...] } with proper HTTP codes.
    -> `{answer:str, citations:[Citation], provider:str, model:str, speech: Speech|null}`
    409 if book not ready, 404 if unknown. Answer must be grounded in retrieved chunks, cite like [1],[2] matching citations order, and say it does not know when not in the book. Keep spoken answers reasonably short (concise default ~120 words).
 - `POST /v1/tts` JSON `{text, voice?}` -> `Speech`
-- `POST /v1/stt` multipart `file` (webm/ogg/wav/mp3/m4a) -> `{text, language|null, provider}`; 503 `stt_unavailable` if no provider.
+- `POST /v1/stt` multipart `file` (webm/ogg/wav/mp3/m4a/aiff) -> `{text, language|null, provider}`; 503 `stt_unavailable` if no provider.
 
 ## bestin-backend (public) — prefix `/api`, JSON, JWT bearer (`Authorization: Bearer <token>`)
 Roles: `admin`, `user`. Seeded admin from env `ADMIN_EMAIL` (default `admin@bestin.local`) / `ADMIN_PASSWORD` (default `admin12345`) on startup if missing.
@@ -75,6 +75,7 @@ Roles: `admin`, `user`. Seeded admin from env `ADMIN_EMAIL` (default `admin@best
   - `DELETE /api/conversations/{id}` -> 204
   - `POST /api/conversations/{id}/ask` `{question, speak?:bool=true, voice?:str, style?}` -> `{user_message:Message, assistant_message:Message, speech: Speech|null}`
      (backend sends the last ~6 messages as history to ai; stores both messages; Q&A log reads from this)
+  - `POST /api/conversations/{id}/ask-voice` multipart `file` (maximum 10 MiB), `speak?`, `voice?`, `style?` -> same as `/ask` plus `transcript` and `input: "voice"`; 422 `no_speech` for blank transcription, 413 for oversized audio.
   - `Conversation = {id, book_id, book_title, title (first question truncated), created_at, updated_at, message_count}`
   - `Message = {id, role:"user"|"assistant", content, citations:[Citation], provider|null, created_at}`
 - Voice helpers (logged in):
