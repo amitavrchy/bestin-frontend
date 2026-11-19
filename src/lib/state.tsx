@@ -4,7 +4,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { api, json } from "./api";
+import { api, ApiError, json } from "./api";
 import type { User } from "./types";
 import { AuthContext, SettingsContext, type Settings } from "./contexts";
 type AuthResult = { access_token: string; user: User };
@@ -15,10 +15,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     !!localStorage.getItem("bestin_token"),
   );
   useEffect(() => {
-    if (localStorage.getItem("bestin_token"))
+    const token = localStorage.getItem("bestin_token");
+    if (token)
       api<User>("/api/auth/me")
         .then(setUser)
-        .catch(() => localStorage.removeItem("bestin_token"))
+        .catch((error: unknown) => {
+          if (error instanceof ApiError && error.status === 401 && localStorage.getItem("bestin_token") === token)
+            localStorage.removeItem("bestin_token");
+        })
         .finally(() => setLoading(false));
   }, []);
   async function signIn(email: string, password: string, name?: string) {

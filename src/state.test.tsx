@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 import { AuthProvider, SettingsProvider } from "./lib/state";
-import { useSettings } from "./lib/contexts";
+import { useAuth, useSettings } from "./lib/contexts";
 import { Guard } from "./pages/Common";
 
 afterEach(() => {
@@ -94,4 +94,14 @@ it("admits administrators to admin routes", async () => {
   );
   render(<RoutesUnderTest />);
   expect(await screen.findByText("Admin page")).toBeTruthy();
+});
+
+it("keeps a session token when the session check cannot reach the server", async () => {
+  localStorage.setItem("bestin_token", "existing-session");
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network error")));
+  const client = new QueryClient();
+  function SessionStatus() { const { loading } = useAuth(); return <span>{loading ? "Checking" : "Checked"}</span>; }
+  render(<QueryClientProvider client={client}><AuthProvider><SessionStatus /></AuthProvider></QueryClientProvider>);
+  await screen.findByText("Checked");
+  expect(localStorage.getItem("bestin_token")).toBe("existing-session");
 });
