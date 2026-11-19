@@ -8,8 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run",
-    "format": "prettier --write src index.html vite.config.ts package.json README.md"
+    "test": "vitest run src",
+    "format": "prettier --write src index.html vite.config.ts package.json README.md",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.108.0",
