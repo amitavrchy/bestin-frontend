@@ -341,9 +341,9 @@ export function SettingsForm() {
           value={settings.character}
           onChange={(e) => update({ character: e.target.value })}
         >
-          <option value="sage">Sage</option>
-          <option value="rose">Rose</option>
-          <option value="ocean">Ocean</option>
+          <option value="sage">Bestin</option>
+          <option value="rafi">Rafi</option>
+          <option value="owl">Owl-sage</option>
         </select>
       </label>
       <label>
@@ -449,7 +449,14 @@ export function AvatarLab() {
             value={expression}
             onChange={(e) => setExpression(e.target.value as Expression)}
           >
-            {["idle", "listening", "thinking", "speaking", "happy"].map((v) => (
+            {[
+              "idle",
+              "listening",
+              "thinking",
+              "speaking",
+              "happy",
+              "confused",
+            ].map((v) => (
               <option key={v}>{v}</option>
             ))}
           </select>
@@ -471,7 +478,7 @@ export function AvatarLab() {
             value={character}
             onChange={(e) => setCharacter(e.target.value)}
           >
-            {["sage", "rose", "ocean"].map((v) => (
+            {["sage", "rafi", "owl"].map((v) => (
               <option key={v}>{v}</option>
             ))}
           </select>

@@ -1,59 +1,10 @@
 import { useEffect, useState } from "react";
 import type { Viseme, VisemeId } from "../types";
+import { useLipSync } from "../avatar/useLipSync";
+import { Owl } from "../avatar/Owl";
+export { visemeAt, useLipSync } from "../avatar/useLipSync";
 export type Expression =
-  "idle" | "listening" | "thinking" | "speaking" | "happy";
-export function visemeAt(cues: Viseme[], time: number): VisemeId {
-  return cues.find((c) => time >= c.start && time < c.end)?.value || "X";
-}
-export function useLipSync(
-  audio: HTMLAudioElement | null,
-  cues: Viseme[],
-): VisemeId {
-  const [shape, setShape] = useState<VisemeId>("X");
-  useEffect(() => {
-    if (!audio) {
-      setShape("X");
-      return;
-    }
-    let frame = 0;
-    let context: AudioContext | undefined;
-    let analyser: AnalyserNode | undefined;
-    let data: Uint8Array<ArrayBuffer> | undefined;
-    if (!cues.length) {
-      try {
-        context = new AudioContext();
-        const source = context.createMediaElementSource(audio);
-        analyser = context.createAnalyser();
-        source.connect(analyser);
-        analyser.connect(context.destination);
-        data = new Uint8Array(analyser.fftSize);
-      } catch {
-        /* timeline remains closed if audio analysis is unavailable */
-      }
-    }
-    const tick = () => {
-      let next: VisemeId = "X";
-      if (!audio.paused && !audio.ended) {
-        next = visemeAt(cues, audio.currentTime);
-        if (analyser && data) {
-          analyser.getByteTimeDomainData(data);
-          const volume = Math.sqrt(
-            data.reduce((n, v) => n + ((v - 128) / 128) ** 2, 0) / data.length,
-          );
-          next = volume > 0.12 ? "D" : volume > 0.035 ? "C" : "X";
-        }
-      }
-      setShape(next);
-      frame = requestAnimationFrame(tick);
-    };
-    tick();
-    return () => {
-      cancelAnimationFrame(frame);
-      void context?.close();
-    };
-  }, [audio, cues]);
-  return shape;
-}
+  "idle" | "listening" | "thinking" | "speaking" | "happy" | "confused";
 const mouths: Record<VisemeId, React.ReactNode> = {
   X: (
     <path
@@ -98,14 +49,25 @@ const mouths: Record<VisemeId, React.ReactNode> = {
   ),
   F: (
     <>
-      <path
-        d="M139 193 Q150 191 161 193 Q158 201 150 202 Q142 201 139 193"
-        fill="#874c4a"
-      />
-      <path d="M140 194 H160" stroke="#fff6e7" strokeWidth="3" />
+      <ellipse cx="150" cy="198" rx="7" ry="8" fill="#a95d5d" />
+      <ellipse cx="150" cy="198" rx="3.5" ry="5" fill="#633238" />
     </>
   ),
-  G: <ellipse cx="150" cy="199" rx="7" ry="10" fill="#633238" />,
+  G: (
+    <>
+      <path
+        d="M138 194 Q150 190 162 194 L159 200 Q150 204 141 200Z"
+        fill="#793d40"
+      />
+      <path d="M141 195 H159" stroke="#fff6e7" strokeWidth="3" />
+      <path
+        d="M142 202 Q150 206 158 202"
+        fill="none"
+        stroke="#c56f70"
+        strokeWidth="2"
+      />
+    </>
+  ),
   H: (
     <>
       <ellipse cx="150" cy="199" rx="9" ry="12" fill="#633238" />
@@ -157,11 +119,15 @@ export function Avatar({
     };
   }, []);
   const outfit =
-    character === "rose"
+    character === "rafi" || character === "rose"
       ? "#ad6b70"
       : character === "ocean"
         ? "#577f91"
         : "#718b71";
+  if (character === "owl")
+    return (
+      <Owl expression={expression} shape={manual || shape} blink={blink} />
+    );
   return (
     <svg
       className={`avatar avatar-${expression}`}

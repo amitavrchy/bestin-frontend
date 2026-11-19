@@ -40,7 +40,14 @@ export function Stage({
         manual={manual}
       />
       <div className="stage-caption">
-        YOUR READING COMPANION <strong>Bestin</strong>
+        YOUR READING COMPANION{" "}
+        <strong>
+          {character === "owl"
+            ? "Owl-sage"
+            : character === "rafi"
+              ? "Rafi"
+              : "Bestin"}
+        </strong>
       </div>
     </div>
   );
