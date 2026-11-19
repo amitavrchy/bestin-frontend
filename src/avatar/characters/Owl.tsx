@@ -1,5 +1,5 @@
-import type { Expression } from "../components/Avatar";
-import type { VisemeId } from "../lib/types";
+import type { Expression } from "../../components/Avatar";
+import type { VisemeId } from "../../lib/types";
 
 /** A separate silhouette for the owl professor, sharing the same expression and speech cues. */
 export function Owl({
@@ -99,7 +99,7 @@ export function Owl({
           <path d="M147 155 Q150 151 153 155 M91 152 L78 148 M209 152 L222 148" />
         </g>
         {(Object.entries(beaks) as [VisemeId, { width: number; height: number }][]).map(([id, dimensions]) => (
-          <g key={id} className="mouth-shape" opacity={shape === id ? 1 : 0}>
+          <g key={id} data-viseme={id} className="mouth-shape" opacity={shape === id ? 1 : 0}>
             <path d={`M${150-dimensions.width} 187 Q150 182 ${150+dimensions.width} 187 L150 ${190+dimensions.height}Z`} fill="#c58b48" stroke="#98653c" strokeWidth="2" />
             {dimensions.height > 6 && <path d={`M${150-dimensions.width+4} 190 Q150 193 ${150+dimensions.width-4} 190 L150 ${187+dimensions.height}Z`} fill="#6e3939" />}
           </g>
