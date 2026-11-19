@@ -7,21 +7,19 @@ import { useLipSync } from "../../useLipSync";
 
 export type Expression =
   "idle" | "listening" | "thinking" | "speaking" | "happy" | "confused";
-import { mouths } from "../../mouths/mouths";
+import { mouths } from "./mouths";
 const EMPTY_WORDS: WordTime[] = [];
 const EMPTY_VISEMES: Viseme[] = [];
 export function Rafi({
   audio = null,
   visemes = EMPTY_VISEMES,
   expression = "idle",
-  character = "sage",
   manual,
   words = EMPTY_WORDS,
 }: {
   audio?: HTMLAudioElement | null;
   visemes?: Viseme[];
   expression?: Expression;
-  character?: string;
   manual?: VisemeId;
   words?: WordTime[];
 }) {
@@ -30,12 +28,7 @@ export function Rafi({
   const shape = useLipSync(audio, visemes);
   const { blink, gaze } = useAvatarMotion();
   const isRafi = true;
-  const outfit =
-    character === "rafi" || character === "rose"
-      ? "#ad6b70"
-      : character === "ocean"
-        ? "#577f91"
-        : "#526f82";
+  const outfit = "#526f82";
   return (
     <svg
       ref={ref}
@@ -106,7 +99,7 @@ export function Rafi({
         <ellipse cx="91" cy="168" rx="15" ry="24" fill="#dba284" />
         <ellipse cx="209" cy="168" rx="15" ry="24" fill="#dba284" />
         <path
-          d="M91 126 Q93 65 150 62 Q207 65 209 126 L205 182 Q199 237 150 251 Q101 237 95 182Z"
+          d="M91 126 Q93 65 150 62 Q207 65 209 126 L207 183 Q203 228 150 248 Q97 228 93 183Z"
           fill="url(#skin)"
         />
         <path

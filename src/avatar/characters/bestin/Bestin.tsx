@@ -51,8 +51,8 @@ export function Bestin({
         </linearGradient>
         <radialGradient id="iris"><stop stopColor="#b3aa72" /><stop offset=".65" stopColor="#52786c" /><stop offset="1" stopColor="#304c47" /></radialGradient>
         <linearGradient id="hair" x2="1" y2="1">
-          <stop stopColor="#694940" />
-          <stop offset="1" stopColor="#362b30" />
+          <stop stopColor="#955438" />
+          <stop offset="1" stopColor="#562f29" />
         </linearGradient>
       </defs>
       <g className="avatar-body">
