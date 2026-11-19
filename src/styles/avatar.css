@@ -181,3 +181,11 @@
   color: #fff8;
   z-index: -1;
 }
+
+.avatar-head { transition: transform 420ms cubic-bezier(.2, 1.35, .35, 1); }
+.avatar-speaking .avatar-body { animation: speaking-breath 1.8s ease-in-out infinite; }
+.avatar-speaking .eyebrows { animation: speaking-brows 3s ease-in-out infinite; }
+.avatar-confused .avatar-head { animation: none; transform: rotate(4deg); }
+@keyframes speaking-breath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.012, 1.018) rotate(.4deg); } }
+@keyframes speaking-brows { 0%, 60%, 100% { transform: translateY(0); } 68%, 78% { transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .avatar-speaking .avatar-body, .avatar-speaking .eyebrows { animation: none; } .avatar-head { transition: none; } }
