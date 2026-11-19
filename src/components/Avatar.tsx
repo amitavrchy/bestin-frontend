@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useAvatarMotion } from "../avatar/useAvatarMotion";
 import type { Viseme, VisemeId } from "../types";
 import { useLipSync } from "../avatar/useLipSync";
 import { Owl } from "../avatar/Owl";
@@ -90,34 +90,7 @@ export function Avatar({
   manual?: VisemeId;
 }) {
   const shape = useLipSync(audio, visemes);
-  const [blink, setBlink] = useState(false);
-  const [gaze, setGaze] = useState(0);
-  useEffect(() => {
-    let timer: number;
-    let live = true;
-    const next = () => {
-      timer = window.setTimeout(
-        () => {
-          if (!live) return;
-          setBlink(true);
-          window.setTimeout(() => setBlink(false), 140);
-          if (Math.random() < 0.18)
-            window.setTimeout(() => {
-              setBlink(true);
-              window.setTimeout(() => setBlink(false), 120);
-            }, 260);
-          setGaze(Math.random() * 4 - 2);
-          next();
-        },
-        2200 + Math.random() * 3500,
-      );
-    };
-    next();
-    return () => {
-      live = false;
-      clearTimeout(timer);
-    };
-  }, []);
+  const { blink, gaze } = useAvatarMotion();
   const isRafi = character === "rafi";
   const outfit =
     character === "rafi" || character === "rose"
