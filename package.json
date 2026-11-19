@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "format": "prettier --write ."
+    "format": "prettier --write src index.html vite.config.ts package.json README.md"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.108.0",
