@@ -19,7 +19,8 @@ const mouths: Record<VisemeId, React.ReactNode> = {
  F:<><path d="M139 193 Q150 191 161 193 Q158 201 150 202 Q142 201 139 193" fill="#874c4a"/><path d="M140 194 H160" stroke="#fff6e7" strokeWidth="3"/></>,
  G:<ellipse cx="150" cy="199" rx="7" ry="10" fill="#633238"/>, H:<><ellipse cx="150" cy="199" rx="9" ry="12" fill="#633238"/><path d="M146 206 Q150 202 154 206" stroke="#df8888" strokeWidth="3"/></>
 };
-export function Avatar({audio=null,visemes=[],expression='idle',character='sage',manual}: {audio?:HTMLAudioElement|null; visemes?:Viseme[]; expression?:Expression; character?:string; manual?:VisemeId}) {
+const EMPTY_VISEMES: Viseme[] = [];
+export function Avatar({audio=null,visemes=EMPTY_VISEMES,expression='idle',character='sage',manual}: {audio?:HTMLAudioElement|null; visemes?:Viseme[]; expression?:Expression; character?:string; manual?:VisemeId}) {
  const shape = useLipSync(audio,visemes); const [blink,setBlink] = useState(false); const [gaze,setGaze] = useState(0);
  useEffect(() => { let timer:number; let live=true; const next=()=>{ timer=window.setTimeout(()=>{ if (!live) return; setBlink(true); window.setTimeout(()=>setBlink(false),140); if(Math.random()<.18) window.setTimeout(()=>{setBlink(true);window.setTimeout(()=>setBlink(false),120);},260); setGaze(Math.random()*4-2); next(); },2200+Math.random()*3500); }; next(); return ()=>{live=false;clearTimeout(timer);}; },[]);
  const outfit = character === 'rose' ? '#ad6b70' : character === 'ocean' ? '#577f91' : '#718b71';
