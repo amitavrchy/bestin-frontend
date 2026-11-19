@@ -1,3 +1,5 @@
+import { Skeleton } from "../components/ui/Skeleton";
+import { EmptyState } from "../components/ui/EmptyState";
 import demoVisemes from "../avatar/demo-visemes.json";
 import { visemeAt } from "../avatar/useLipSync";
 import type { Viseme } from "../lib/types";
@@ -255,7 +257,7 @@ export function LibraryPage() {
         />
       </div>
       {isLoading ? (
-        <p>Loading your books…</p>
+        <Skeleton label="Loading your books" />
       ) : error ? (
         <p className="error">{error.message}</p>
       ) : books?.length ? (
@@ -274,11 +276,9 @@ export function LibraryPage() {
           ))}
         </div>
       ) : (
-        <div className="empty">
-          <BookOpen />
-          <h3>No books here yet</h3>
-          <p>When a book is ready, you’ll find it here.</p>
-        </div>
+        <EmptyState icon={<BookOpen />} title="No books here yet">
+          When a book is ready, you’ll find it here.
+        </EmptyState>
       )}
     </div>
   );
