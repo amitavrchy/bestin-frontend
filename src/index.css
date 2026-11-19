@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap");
 @import "tailwindcss";
+
+@theme {
+  --color-forest: #4b705b;
+  --color-cream: #f8f8f3;
+  --color-ink: #313a35;
+  --color-terracotta: #ad6b70;
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "DM Serif Display", Georgia, serif;
+  --radius-card: 1.25rem;
+  --shadow-card: 0 15px 45px #344a3110;
+}
+
 :root {
   font-family: "DM Sans", sans-serif;
   color: #313a35;
