@@ -9,7 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
-import { AuthProvider, SettingsProvider, useSettings } from "./state";
+import { AuthProvider, SettingsProvider, useSettings } from "./lib/state";
 import { Guard } from "./pages/Common";
 
 afterEach(() => {
@@ -72,13 +72,11 @@ it("redirects a non-admin away from admin routes", async () => {
   localStorage.setItem("bestin_token", "token");
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ id: 1, name: "Reader", role: "user" }), {
-          status: 200,
-        }),
-      ),
+    vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ id: 1, name: "Reader", role: "user" }), {
+        status: 200,
+      }),
+    ),
   );
   render(<RoutesUnderTest />);
   expect(await screen.findByText("Library")).toBeTruthy();
@@ -87,13 +85,11 @@ it("admits administrators to admin routes", async () => {
   localStorage.setItem("bestin_token", "token");
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ id: 1, name: "Admin", role: "admin" }), {
-          status: 200,
-        }),
-      ),
+    vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ id: 1, name: "Admin", role: "admin" }), {
+        status: 200,
+      }),
+    ),
   );
   render(<RoutesUnderTest />);
   expect(await screen.findByText("Admin page")).toBeTruthy();

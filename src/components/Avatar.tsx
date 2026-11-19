@@ -1,5 +1,5 @@
 import { useAvatarMotion } from "../avatar/useAvatarMotion";
-import type { Viseme, VisemeId } from "../types";
+import type { Viseme, VisemeId } from "../lib/types";
 import { useLipSync } from "../avatar/useLipSync";
 import { Owl } from "../avatar/Owl";
 export { visemeAt, useLipSync } from "../avatar/useLipSync";

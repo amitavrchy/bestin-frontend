@@ -1,5 +1,5 @@
 import type { Expression } from "../components/Avatar";
-import type { VisemeId } from "../types";
+import type { VisemeId } from "../lib/types";
 
 /** A separate silhouette for the owl professor, sharing the same expression and speech cues. */
 export function Owl({

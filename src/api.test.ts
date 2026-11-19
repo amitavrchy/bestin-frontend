@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from "vitest";
-import { api, ApiError, json } from "./api";
+import { api, ApiError, json } from "./lib/api";
 afterEach(() => {
   localStorage.clear();
   vi.unstubAllGlobals();
@@ -19,13 +19,11 @@ it("attaches the bearer token and JSON content type", async () => {
 it("maps backend errors to ApiError", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ detail: "stt_unavailable" }), {
-          status: 503,
-        }),
-      ),
+    vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ detail: "stt_unavailable" }), {
+        status: 503,
+      }),
+    ),
   );
   await expect(api("/api/stt")).rejects.toMatchObject({
     message: "stt_unavailable",

@@ -12,10 +12,10 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { api, ApiError, json } from "../../api";
+import { api, ApiError, json } from "../../lib/api";
 import { Stage } from "../../components/Stage";
-import { useSettings } from "../../state";
-import type { Book, Conversation, Message, Speech } from "../../types";
+import { useSettings } from "../../lib/state";
+import type { Book, Conversation, Message, Speech } from "../../lib/types";
 import { SettingsForm } from "../../pages/Common";
 type Recognition = {
   start: () => void;

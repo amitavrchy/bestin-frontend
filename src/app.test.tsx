@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { Avatar, visemeAt } from "./components/Avatar";
-import { api } from "./api";
+import { api } from "./lib/api";
 import { Stage } from "./components/Stage";
 
 afterEach(() => {

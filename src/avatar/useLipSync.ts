@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Viseme, VisemeId } from "../types";
+import type { Viseme, VisemeId } from "../lib/types";
 
 /** Cues use a half-open interval so adjacent shapes never overlap. */
 export function visemeAt(cues: Viseme[], time: number): VisemeId {

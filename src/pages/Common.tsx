@@ -1,6 +1,6 @@
 import demoVisemes from "../avatar/demo-visemes.json";
 import { visemeAt } from "../avatar/useLipSync";
-import type { Viseme } from "../types";
+import type { Viseme } from "../lib/types";
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
@@ -13,10 +13,10 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { api, apiBase, json } from "../api";
-import { useAuth, useSettings } from "../state";
+import { api, apiBase, json } from "../lib/api";
+import { useAuth, useSettings } from "../lib/state";
 import { Stage, backgrounds } from "../components/Stage";
-import { VISEMES, type Book, type VisemeId, type Voice } from "../types";
+import { VISEMES, type Book, type VisemeId, type Voice } from "../lib/types";
 import type { Expression } from "../components/Avatar";
 export function Guard({ admin = false }: { admin?: boolean }) {
   const { user, loading } = useAuth();

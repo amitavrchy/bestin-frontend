@@ -2,7 +2,7 @@
 import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useLipSync, visemeAt } from "./useLipSync";
-import { VISEMES, type Viseme } from "../types";
+import { VISEMES, type Viseme } from "../lib/types";
 import { Avatar } from "../components/Avatar";
 import { render, screen } from "@testing-library/react";
 

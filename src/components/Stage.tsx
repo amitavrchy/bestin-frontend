@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { SceneArtwork } from "../scenes/SceneArtwork";
 import { Avatar, type Expression } from "./Avatar";
-import type { Viseme, VisemeId } from "../types";
+import type { Viseme, VisemeId } from "../lib/types";
 export const backgrounds = [
   "library",
   "night",
