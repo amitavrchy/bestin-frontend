@@ -251,15 +251,30 @@ export function Avatar({
         />
         <ellipse cx="112" cy="180" rx="10" ry="5" fill="#e89d92" opacity=".3" />
         <ellipse cx="188" cy="180" rx="10" ry="5" fill="#e89d92" opacity=".3" />
-        <g className="mouth" key={manual || shape}>
-          {expression === "happy" && !manual && shape === "X" ? (
+        <g className="mouth" aria-hidden="true">
+          {(Object.keys(mouths) as VisemeId[]).map((value) => (
+            <g
+              key={value}
+              className="mouth-shape"
+              opacity={
+                (manual || shape) === value &&
+                !(expression === "happy" && !manual && shape === "X")
+                  ? 1
+                  : 0
+              }
+            >
+              {mouths[value]}
+            </g>
+          ))}
+          <g
+            className="mouth-shape"
+            opacity={expression === "happy" && !manual && shape === "X" ? 1 : 0}
+          >
             <path
               d="M137 194 Q150 209 163 194 Q150 203 137 194"
               fill="#783d3b"
             />
-          ) : (
-            mouths[manual || shape]
-          )}
+          </g>
         </g>
         <g fill="none" stroke="#806d5a" strokeWidth="2" opacity=".8">
           <circle cx="124" cy="154" r="17" />

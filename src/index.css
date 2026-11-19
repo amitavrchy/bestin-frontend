@@ -1233,3 +1233,12 @@ progress {
     transform: none !important;
   }
 }
+
+.mouth-shape {
+  transition: opacity 60ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mouth-shape {
+    transition: none;
+  }
+}
