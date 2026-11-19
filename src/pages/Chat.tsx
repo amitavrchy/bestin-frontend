@@ -40,6 +40,7 @@ export function ChatPage() {
   const [error, setError] = useState("");
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [speech, setSpeech] = useState<Speech | null>(null);
+  const [speechMessage, setSpeechMessage] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [quick, setQuick] = useState(false);
@@ -47,6 +48,7 @@ export function ChatPage() {
   const recognitionRef = useRef<Recognition | null>(null);
   const audioUrl = useRef<string | null>(null);
   const greeted = useRef(false);
+  const speechRequest = useRef(0);
   const { data: book } = useQuery({
     queryKey: ["book", bookId],
     queryFn: () => api<Book>(`/api/books/${bookId}`),
@@ -77,7 +79,7 @@ export function ChatPage() {
     },
     [],
   );
-  function playSpeech(s: Speech, auto = true) {
+  function playSpeech(s: Speech, auto = true, messageId: number | null = null) {
     audio?.pause();
     if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
     const bytes = Uint8Array.from(atob(s.audio_base64), (c) => c.charCodeAt(0));
@@ -90,6 +92,8 @@ export function ChatPage() {
     a.onpause = () => setPlaying(false);
     a.onended = () => setPlaying(false);
     setSpeech(s);
+    setSpeechMessage(messageId);
+    setTime(0);
     setAudio(a);
     if (auto && settings.autoplay && !settings.mute)
       void a.play().catch(() => setError("Press play to hear the answer."));
@@ -97,6 +101,7 @@ export function ChatPage() {
   useEffect(() => {
     if (book && !greeted.current) {
       greeted.current = true;
+      const request = ++speechRequest.current;
       if (settings.autoplay && !settings.mute)
         api<Speech>("/api/tts", {
           method: "POST",
@@ -105,12 +110,16 @@ export function ChatPage() {
             voice: settings.voice,
           }),
         })
-          .then((s) => playSpeech(s))
+          .then((s) => {
+            if (speechRequest.current === request) playSpeech(s);
+          })
           .catch(() => {});
     }
   }, [book]);
   async function ask(question: string) {
     if (!question.trim() || busy) return;
+    speechRequest.current += 1;
+    audio?.pause();
     setText("");
     setError("");
     setBusy(true);
@@ -139,7 +148,8 @@ export function ChatPage() {
       });
       await client.invalidateQueries({ queryKey: ["conversation", cid] });
       await client.invalidateQueries({ queryKey: ["conversations", bookId] });
-      if (result.speech) playSpeech(result.speech);
+      if (result.speech)
+        playSpeech(result.speech, true, result.assistant_message.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not ask your question");
       setText(question);
@@ -380,7 +390,7 @@ export function ChatPage() {
                 </div>
               </div>
             )}
-            {messages.map((m, i) => (
+            {messages.map((m) => (
               <div className={`message ${m.role}`} key={m.id}>
                 <div className="message-label">
                   {m.role === "assistant" ? "✳  BESTIN" : "YOU"}
@@ -388,7 +398,7 @@ export function ChatPage() {
                 <div className="bubble">
                   {settings.captions || m.role === "user" ? (
                     m.role === "assistant" &&
-                    i === messages.length - 1 &&
+                    m.id === speechMessage &&
                     speech?.words?.length &&
                     playing ? (
                       <>
