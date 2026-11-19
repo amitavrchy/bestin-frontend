@@ -1,21 +1,101 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { api, json } from './api';
-import type { User } from './types';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { api, json } from "./api";
+import type { User } from "./types";
 type AuthResult = { access_token: string; user: User };
-type AuthContextType = { user: User | null; loading: boolean; signIn: (email: string, password: string, name?: string) => Promise<void>; signOut: () => void };
+type AuthContextType = {
+  user: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string, name?: string) => Promise<void>;
+  signOut: () => void;
+};
 const AuthContext = createContext<AuthContextType>(null!);
-export function AuthProvider({children}: {children: ReactNode}) {
- const [user,setUser] = useState<User|null>(null); const [loading,setLoading] = useState(!!localStorage.getItem('bestin_token'));
- useEffect(() => { if (localStorage.getItem('bestin_token')) api<User>('/api/auth/me').then(setUser).catch(() => localStorage.removeItem('bestin_token')).finally(() => setLoading(false)); }, []);
- async function signIn(email: string,password: string,name?: string) { const result = await api<AuthResult>(`/api/auth/${name === undefined ? 'login' : 'register'}`, {method:'POST',body:json(name === undefined ? {email,password} : {email,password,name})}); localStorage.setItem('bestin_token',result.access_token); setUser(result.user); }
- function signOut() { localStorage.removeItem('bestin_token'); setUser(null); }
- return <AuthContext.Provider value={{user,loading,signIn,signOut}}>{children}</AuthContext.Provider>;
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(
+    !!localStorage.getItem("bestin_token"),
+  );
+  useEffect(() => {
+    if (localStorage.getItem("bestin_token"))
+      api<User>("/api/auth/me")
+        .then(setUser)
+        .catch(() => localStorage.removeItem("bestin_token"))
+        .finally(() => setLoading(false));
+  }, []);
+  async function signIn(email: string, password: string, name?: string) {
+    const result = await api<AuthResult>(
+      `/api/auth/${name === undefined ? "login" : "register"}`,
+      {
+        method: "POST",
+        body: json(
+          name === undefined ? { email, password } : { email, password, name },
+        ),
+      },
+    );
+    localStorage.setItem("bestin_token", result.access_token);
+    setUser(result.user);
+  }
+  function signOut() {
+    localStorage.removeItem("bestin_token");
+    setUser(null);
+  }
+  return (
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 export const useAuth = () => useContext(AuthContext);
-export type Settings = { voice:string; mute:boolean; autoplay:boolean; style:'concise'|'detailed'; character:string; background:string; theme:'light'|'dark'; captions:boolean };
-const defaults: Settings = {voice:'en-US-AriaNeural',mute:false,autoplay:true,style:'concise',character:'sage',background:'library',theme:'light',captions:true};
-const SettingsContext = createContext<{settings:Settings; update:(v:Partial<Settings>)=>void}>(null!);
-export function SettingsProvider({children}:{children:ReactNode}) { const [settings,setSettings] = useState<Settings>(() => { try { return {...defaults,...JSON.parse(localStorage.getItem('bestin_settings') || '{}')}; } catch { return defaults; } });
- useEffect(() => { localStorage.setItem('bestin_settings',JSON.stringify(settings)); document.documentElement.dataset.theme = settings.theme; },[settings]);
- return <SettingsContext.Provider value={{settings,update:v=>setSettings(s=>({...s,...v}))}}>{children}</SettingsContext.Provider>; }
+export type Settings = {
+  voice: string;
+  mute: boolean;
+  autoplay: boolean;
+  style: "concise" | "detailed";
+  character: string;
+  background: string;
+  theme: "light" | "dark";
+  captions: boolean;
+};
+const defaults: Settings = {
+  voice: "en-US-AriaNeural",
+  mute: false,
+  autoplay: true,
+  style: "concise",
+  character: "sage",
+  background: "library",
+  theme: "light",
+  captions: true,
+};
+const SettingsContext = createContext<{
+  settings: Settings;
+  update: (v: Partial<Settings>) => void;
+}>(null!);
+export function SettingsProvider({ children }: { children: ReactNode }) {
+  const [settings, setSettings] = useState<Settings>(() => {
+    try {
+      return {
+        ...defaults,
+        ...JSON.parse(localStorage.getItem("bestin_settings") || "{}"),
+      };
+    } catch {
+      return defaults;
+    }
+  });
+  useEffect(() => {
+    localStorage.setItem("bestin_settings", JSON.stringify(settings));
+    document.documentElement.dataset.theme = settings.theme;
+  }, [settings]);
+  return (
+    <SettingsContext.Provider
+      value={{ settings, update: (v) => setSettings((s) => ({ ...s, ...v })) }}
+    >
+      {children}
+    </SettingsContext.Provider>
+  );
+}
 export const useSettings = () => useContext(SettingsContext);
