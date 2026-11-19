@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   createContext,
   useContext,
@@ -16,6 +17,7 @@ type AuthContextType = {
 };
 const AuthContext = createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(
     !!localStorage.getItem("bestin_token"),
@@ -37,11 +39,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ),
       },
     );
+    queryClient.clear();
     localStorage.setItem("bestin_token", result.access_token);
     setUser(result.user);
   }
   function signOut() {
     localStorage.removeItem("bestin_token");
+    queryClient.clear();
     setUser(null);
   }
   return (
