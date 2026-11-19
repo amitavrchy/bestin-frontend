@@ -4,8 +4,11 @@ const screenshot = async (page: Page, name: string) => {
   if (process.env.E2E_SCREENSHOTS === "1") await page.screenshot({ path: `docs/screenshots/${name}.png`, animations: "disabled" });
 };
 
-test('admin adds a book and a reader talks to it', async ({ page }) => {
-  const title = `The Lantern Garden ${Date.now()}`;
+test('admin adds a book and a reader talks to it', async ({ page, request }) => {
+  const unique = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const title = `The Lantern Garden ${unique}`;
+  const email = `reader-${unique}@example.com`;
+  try {
   await page.goto('/login');
   await screenshot(page, 'login');
   await page.getByLabel('Email').fill('admin@bestin.local');
@@ -30,7 +33,7 @@ test('admin adds a book and a reader talks to it', async ({ page }) => {
   await page.getByRole('button', { name: 'Sign out' }).click();
   await page.goto('/register');
   await page.getByLabel('Name').fill('Browser Reader');
-  await page.getByLabel('Email').fill(`reader${Date.now()}@example.com`);
+  await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill('reader12345');
   await page.getByRole('button', { name: 'Create account' }).click();
   await expect(page.getByRole('heading', { name: title })).toBeVisible();
@@ -41,12 +44,30 @@ test('admin adds a book and a reader talks to it', async ({ page }) => {
   await expect(page.locator('.message.assistant .citations summary').first()).toBeVisible({ timeout: 180_000 });
   await expect(page.locator('.avatar-speaking')).toBeVisible({ timeout: 30_000 });
   await screenshot(page, 'chat-speaking');
+  if (process.env.E2E_SCREENSHOTS === '1') {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await screenshot(page, 'mobile-chat');
+    await page.setViewportSize({ width: 1200, height: 800 });
+  }
   await page.getByLabel('Quick settings').click();
   await page.getByLabel('Character').selectOption('rafi');
   await page.getByLabel('Scene').selectOption('garden');
   await page.reload();
   await expect(page.locator('.scene-garden')).toBeVisible();
   await expect(page.getByRole('img', { name: /Rafi/ })).toBeVisible();
+  } finally {
+    const login = await request.post('http://localhost:8000/api/auth/login', { data: { email: 'admin@bestin.local', password: 'admin12345' } });
+    expect(login.ok()).toBeTruthy();
+    const { access_token } = await login.json();
+    const headers = { Authorization: `Bearer ${access_token}` };
+    const books = await (await request.get('http://localhost:8000/api/books', { headers })).json();
+    for (const book of books.filter((item: { title: string }) => item.title === title)) {
+      expect((await request.delete(`http://localhost:8000/api/admin/books/${book.id}`, { headers })).ok()).toBeTruthy();
+    }
+    const users = await (await request.get('http://localhost:8000/api/admin/users', { headers })).json();
+    const reader = users.find((item: { email: string }) => item.email === email);
+    if (reader) expect((await request.patch(`http://localhost:8000/api/admin/users/${reader.id}`, { headers, data: { is_active: false } })).ok()).toBeTruthy();
+  }
 });
 
 test('avatar lab renders all visemes, characters, and scenes', async ({ page }) => {
@@ -58,6 +79,7 @@ test('avatar lab renders all visemes, characters, and scenes', async ({ page }) 
       await expect(page.locator(`.avatar [data-viseme="${shape}"]`)).toHaveAttribute('opacity', '1');
     }
     await screenshot(page, `avatar-${character}`);
+    if (character === "sage") await screenshot(page, "avatar-bestin");
   }
   await page.getByLabel('Character').selectOption('sage');
   for (const scene of ['library', 'night', 'garden', 'studio', 'rain']) {
