@@ -77,3 +77,10 @@ export interface Voice {
   locale: string;
   provider: string;
 }
+
+export interface ServiceHealth {
+  status: string;
+  service: string;
+  db?: string;
+  ai?: string;
+}
