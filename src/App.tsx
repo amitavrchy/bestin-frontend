@@ -1,4 +1,5 @@
-import { Component, useEffect, useState, type ReactNode } from "react";
+import { Toasts } from "./components/ui/Toasts";
+import { Component, type ReactNode } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import {
   AuthPage,
@@ -35,30 +36,6 @@ class ErrorBoundary extends Component<
       this.props.children
     );
   }
-}
-function Toasts() {
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    let timer: number;
-    const show = (event: Event) => {
-      setMessage((event as CustomEvent<string>).detail);
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => setMessage(""), 5000);
-    };
-    window.addEventListener("bestin-error", show);
-    return () => {
-      window.removeEventListener("bestin-error", show);
-      window.clearTimeout(timer);
-    };
-  }, []);
-  return message ? (
-    <div className="toast" role="alert">
-      {message}
-      <button onClick={() => setMessage("")} aria-label="Dismiss notification">
-        ×
-      </button>
-    </div>
-  ) : null;
 }
 export default function App() {
   return (

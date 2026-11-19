@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { BookOpen, LayoutDashboard, LogOut, Settings as SettingsIcon, Library, Users, MessageSquare } from "lucide-react";
+import { UserAvatar } from "../../components/ui/UserAvatar";
 import { useAuth } from "../../lib/contexts";
 export function Layout() {
   const { user, signOut } = useAuth();
@@ -39,9 +40,7 @@ export function Layout() {
           )}
         </nav>
         <div className="sidebar-bottom">
-          <div className="user-badge">
-            {user?.name.slice(0, 1).toUpperCase()}
-          </div>
+          <UserAvatar name={user?.name || ""} />
           <div>
             <strong>{user?.name}</strong>
             <small>{user?.role}</small>

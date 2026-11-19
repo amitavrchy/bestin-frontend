@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, json } from "../../lib/api";
 import type { Book } from "../../lib/types";
+import { Badge } from "../../components/ui/Badge";
+import { ProgressBar } from "../../components/ui/ProgressBar";
 import { Cover } from "../library/Cover";
 export function AdminBooks() {
   const client = useQueryClient();
@@ -58,12 +60,12 @@ export function AdminBooks() {
               <p className="muted">
                 {b.author || "Unknown author"} · {b.file_name}
               </p>
-              <span className="badge">{b.status}</span>{" "}
+              <Badge>{b.status}</Badge>{" "}
               <span className="badge">
                 {b.is_published ? "Published" : "Unpublished"}
               </span>
               {["queued", "processing"].includes(b.status) && (
-                <progress value={b.progress} max={1} />
+                <ProgressBar value={b.progress} aria-label="Ingestion progress" />
               )}{" "}
               {b.error && <p className="error">{b.error}</p>}
             </div>
