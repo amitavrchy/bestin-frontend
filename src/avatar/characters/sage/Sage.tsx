@@ -1,8 +1,8 @@
-import type { Expression } from "../../components/Avatar";
-import type { VisemeId } from "../../lib/types";
+import type { Expression } from "../../../components/Avatar";
+import type { VisemeId } from "../../../lib/types";
 
 /** A separate silhouette for the owl professor, sharing the same expression and speech cues. */
-export function Owl({
+export function Sage({
   expression,
   shape,
   blink,
@@ -61,6 +61,7 @@ export function Owl({
         />
       </g>
       <g className="avatar-head">
+        <path d="M83 91 L150 55 L217 91 L150 110Z" fill="#384b4c" /><path d="M104 91 v21 Q150 128 196 112 V91" fill="#49615d" /><path d="M214 92 v37" stroke="#e2ba68" strokeWidth="3" /><circle cx="214" cy="130" r="4" fill="#e2ba68" />
         <path
           d="M76 113 L67 53 Q91 60 111 77 Q150 62 189 77 Q209 60 233 53 L224 113 Q239 145 226 207 Q218 250 150 268 Q82 250 74 207 Q61 145 76 113Z"
           fill="url(#owl-feathers)"
@@ -104,6 +105,7 @@ export function Owl({
             {dimensions.height > 6 && <path d={`M${150-dimensions.width+4} 190 Q150 193 ${150+dimensions.width-4} 190 L150 ${187+dimensions.height}Z`} fill="#6e3939" />}
           </g>
         ))}
+        <path d="M91 196 q8 7 16 0 m-12 12 q8 7 16 0 m78 -12 q8 7 16 0 m-20 12 q8 7 16 0" fill="none" stroke="#c19a78" strokeWidth="2" />
         <path
           d="M98 213 Q111 227 126 229 M202 213 Q189 227 174 229 M130 244 Q150 251 170 244"
           fill="none"
