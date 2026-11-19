@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, json, upload } from "../../lib/api";
@@ -154,8 +154,13 @@ export function BookEditor({ isNew = false }: { isNew?: boolean }) {
   );
 }
 function CoverPreview({ file }: { file: File }) {
-  const url = useMemo(() => URL.createObjectURL(file), [file]);
-  useEffect(() => () => URL.revokeObjectURL(url), [url]);
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    const reader = new FileReader();
+    reader.onload = () => setUrl(typeof reader.result === "string" ? reader.result : "");
+    reader.readAsDataURL(file);
+    return () => { reader.onload = null; if (reader.readyState === FileReader.LOADING) reader.abort(); };
+  }, [file]);
   return (
     <img className="cover-preview" src={url} alt="Selected cover preview" />
   );

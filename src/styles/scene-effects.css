@@ -1,0 +1,8 @@
+.scene-dust { animation: float 5s ease-in-out infinite alternate; }
+.scene-shooting-star { animation: shooting 9s ease-in infinite; }
+.scene-butterfly { animation: butterfly 8s ease-in-out infinite alternate; }
+.scene-blob { animation: blob 10s ease-in-out infinite alternate; }
+@keyframes shooting { 0%, 82%, 100% { opacity: 0; transform: translate(0,0); } 85% { opacity: .8; } 93% { opacity: 0; transform: translate(-130px,65px); } }
+@keyframes butterfly { from { translate: 0 0; } to { translate: 30px -22px; } }
+@keyframes blob { to { translate: 25px -15px; scale: 1.05; } }
+@media (prefers-reduced-motion: reduce) { .scene-dust, .scene-shooting-star, .scene-butterfly, .scene-blob { animation: none; } }

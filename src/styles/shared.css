@@ -1,0 +1,48 @@
+.empty,
+.center {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+.empty svg {
+  color: #9fb4a0;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  margin: 22px 0;
+}
+.form-stack {
+  display: grid;
+  gap: 19px;
+}
+.form-stack label small {
+  font-weight: 400;
+}
+.error {
+  color: #b34c4c;
+  font-size: 13px;
+}
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.inline select {
+  flex: 1;
+}
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.check {
+  display: flex;
+  align-items: center;
+}
+.check input {
+  width: auto;
+}

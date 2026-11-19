@@ -1,0 +1,100 @@
+.library-banner {
+  min-height: 190px;
+  border-radius: 20px;
+  background: #e8efe2;
+  color: #3c6048;
+  padding: 34px 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+}
+.library-banner h2 {
+  font-size: 32px;
+}
+.library-banner p:last-child {
+  font-size: 14px;
+  color: #718773;
+  margin-bottom: 0;
+}
+.library-banner > svg {
+  opacity: 0.3;
+  transform: rotate(-12deg);
+  margin-right: 6%;
+}
+.section-heading {
+  margin: 42px 0 20px;
+}
+.section-heading p {
+  margin: 0;
+  font-size: 13px;
+}
+.search {
+  max-width: 260px;
+}
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 26px;
+}
+.book-card {
+  min-width: 0;
+}
+.cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border-radius: 9px;
+  box-shadow: 0 9px 20px #263a2d20;
+}
+.cover:not(img) {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 23px;
+  color: #f5eee0;
+  background: #6c8270;
+}
+.cover strong {
+  font-family: "DM Serif Display", serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.cover small {
+  color: inherit;
+  opacity: 0.75;
+  letter-spacing: 1px;
+}
+.cover-1 {
+  background: #c18c76 !important;
+}
+.cover-2 {
+  background: #8e91a4 !important;
+}
+.cover-3 {
+  background: #bcaa79 !important;
+}
+.book-info {
+  padding: 15px 2px;
+}
+.book-info h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-info p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+.badge {
+  display: inline-block;
+  background: var(--soft);
+  color: var(--green);
+  border-radius: 20px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 8px;
+}

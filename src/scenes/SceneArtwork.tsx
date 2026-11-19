@@ -7,6 +7,10 @@ export function SceneArtwork({ scene }: { scene: string }) {
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
     >
+      <defs>
+        <radialGradient id="scene-light"><stop stopColor="#fff3cf" stopOpacity=".55"/><stop offset="1" stopColor="#fff3cf" stopOpacity="0"/></radialGradient>
+        <radialGradient id="scene-vignette"><stop offset=".55" stopColor="#17262a" stopOpacity="0"/><stop offset="1" stopColor="#17262a" stopOpacity=".25"/></radialGradient>
+      </defs>
       {scene === "library" && (
         <g>
           <rect width="600" height="440" fill="#d7bca0" />
@@ -50,7 +54,8 @@ export function SceneArtwork({ scene }: { scene: string }) {
             strokeWidth="7"
             strokeLinecap="round"
           />
-          <circle cx="380" cy="92" r="75" fill="#ffe2a5" opacity=".18" />
+          <circle cx="380" cy="92" r="150" fill="url(#scene-light)" />
+          {Array.from({length: 14}, (_, i) => <circle key={i} className="scene-dust" cx={180 + (i * 39) % 260} cy={40 + (i * 61) % 260} r={1 + i % 2} fill="#fff1ce" style={{animationDelay: `${i * -.7}s`}} />)}
         </g>
       )}
       {scene === "night" && (
@@ -68,6 +73,7 @@ export function SceneArtwork({ scene }: { scene: string }) {
               style={{ animationDelay: `${(i % 7) * 0.4}s` }}
             />
           ))}
+          <path className="scene-shooting-star" d="M370 35 l-48 20" stroke="#fff3d4" strokeWidth="2" opacity=".8" />
           <path
             d="M0 332 Q100 265 190 319 T380 315 T600 300 V440 H0Z"
             fill="#414c64"
@@ -117,6 +123,7 @@ export function SceneArtwork({ scene }: { scene: string }) {
               />
             </g>
           ))}
+          {[0, 1].map(i => <g key={i} className="scene-butterfly" style={{animationDelay: `${i * -5}s`}} transform={`translate(${90 + i * 350} ${160 + i * 50})`}><path d="M0 0 Q-15 -18 -17 -4 Q-14 7 0 3 Q14 7 17 -4 Q15 -18 0 0Z" fill="#f8d5a3"/><path d="M0 -3 V8" stroke="#8d7966" strokeWidth="2"/></g>)}
           <path
             d="M40 370 Q75 315 130 347 M470 350 Q535 310 590 370"
             fill="none"
@@ -145,6 +152,7 @@ export function SceneArtwork({ scene }: { scene: string }) {
               style={{ animationDelay: `${(i % 9) * -0.3}s` }}
             />
           ))}
+          {Array.from({length: 18}, (_, i) => <ellipse key={i} cx={75 + (i * 97) % 450} cy={30 + (i * 71) % 300} rx="2" ry="4" fill="#eff8f4" opacity=".45"/>)}
           <path d="M0 350 H600 V440 H0Z" fill="#bc9a81" />
           <path
             d="M70 350 Q90 265 126 350 M465 350 Q500 280 535 350"
@@ -155,7 +163,9 @@ export function SceneArtwork({ scene }: { scene: string }) {
       {scene === "studio" && (
         <g>
           <rect width="600" height="440" fill="#eaded2" />
-          <circle cx="300" cy="200" r="170" fill="#f5ece1" />
+          <circle className="scene-blob" cx="220" cy="145" r="130" fill="#f6d8ca" opacity=".45" />
+          <circle className="scene-blob" cx="390" cy="250" r="145" fill="#c7d8c9" opacity=".5" style={{animationDelay: "-5s"}} />
+          <circle cx="300" cy="200" r="170" fill="#f5ece1" opacity=".7" />
           <circle
             cx="300"
             cy="200"
@@ -167,6 +177,7 @@ export function SceneArtwork({ scene }: { scene: string }) {
           <path d="M0 350 Q300 310 600 350 V440 H0Z" fill="#d7c7ba" />
         </g>
       )}
+      <rect width="600" height="440" fill="url(#scene-vignette)" pointerEvents="none" />
     </svg>
   );
 }

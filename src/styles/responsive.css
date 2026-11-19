@@ -1,0 +1,315 @@
+@keyframes breathe {
+  50% {
+    transform: scaleY(1.015);
+  }
+}
+@keyframes sway {
+  50% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes speak {
+  50% {
+    transform: rotate(2deg) translateY(2px);
+  }
+}
+@keyframes mouth {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes float {
+  50% {
+    transform: translateY(-12px);
+    opacity: 0.4;
+  }
+}
+@keyframes rain {
+  to {
+    background-position: -20px 40px;
+  }
+}
+@media (max-width: 800px) {
+  .sidebar {
+    width: 70px;
+    padding: 20px 10px;
+  }
+  .sidebar .brand {
+    font-size: 0;
+    justify-content: center;
+  }
+  .sidebar nav a {
+    font-size: 0;
+    justify-content: center;
+  }
+  .sidebar nav a svg {
+    flex-shrink: 0;
+  }
+  .sidebar .nav-label,
+  .sidebar-bottom > div:not(.user-badge),
+  .sidebar-bottom .icon-button {
+    display: none;
+  }
+  .sidebar-bottom {
+    justify-content: center;
+  }
+  .page {
+    padding: 35px 5%;
+  }
+  .chat-page {
+    height: auto;
+    min-height: 100vh;
+  }
+  .chat-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-stage .stage {
+    height: 350px;
+  }
+  .transcript {
+    border-left: 0;
+    min-height: 600px;
+  }
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+  .auth-art {
+    display: none;
+  }
+  .auth-form {
+    min-height: 100vh;
+  }
+  .admin-book {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .actions {
+    width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  h1 {
+    font-size: 38px;
+  }
+  .page-heading,
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .search {
+    max-width: none;
+  }
+  .book-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+  }
+  .library-banner {
+    padding: 25px;
+  }
+  .library-banner > svg {
+    display: none;
+  }
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  .chat-top {
+    padding: 0 15px;
+    gap: 12px;
+  }
+  .chat-stage {
+    padding: 15px;
+  }
+  .messages {
+    padding: 20px;
+  }
+  .composer {
+    padding: 15px;
+  }
+  .sidebar {
+    width: 54px;
+  }
+  .sidebar nav a {
+    padding: 10px;
+  }
+  .sidebar .brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.toast {
+  position: fixed;
+  z-index: 100;
+  right: 20px;
+  bottom: 20px;
+  max-width: 360px;
+  background: #513c3c;
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px #0003;
+  font-size: 13px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.toast button {
+  background: transparent;
+  color: #fff;
+  border: 0;
+  padding: 0;
+  font-size: 20px;
+  margin-left: auto;
+}
+
+.avatar-thinking .eyebrows {
+  transform: translateY(2px) rotate(-1deg);
+  transform-origin: 150px 140px;
+}
+.avatar-listening .eyebrows,
+.avatar-happy .eyebrows {
+  transform: translateY(-3px);
+}
+.avatar-thinking .scene-decor {
+  opacity: 0.8;
+}
+
+.mouth {
+  animation: mouth-enter 60ms ease-out;
+}
+@keyframes mouth-enter {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.avatar-confused .eyebrows {
+  transform: translateY(-2px) rotate(-2deg);
+  transform-origin: 150px 140px;
+}
+
+.scene-artwork {
+  position: absolute;
+  inset: -3%;
+  width: 106%;
+  height: 106%;
+  transform: translate(var(--scene-x, 0), var(--scene-y, 0));
+  transition: transform 0.3s ease-out;
+}
+.scene-star {
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+.scene-rain-streak {
+  animation: rainfall 1.3s linear infinite;
+}
+.scene-leaf {
+  animation: leaf-sway 4s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+@keyframes twinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes rainfall {
+  from {
+    translate: 0 -20px;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  to {
+    translate: -8px 35px;
+    opacity: 0;
+  }
+}
+@keyframes leaf-sway {
+  from {
+    rotate: -2deg;
+  }
+  to {
+    rotate: 3deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-artwork,
+  .scene-star,
+  .scene-rain-streak,
+  .scene-leaf,
+  .mouth {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+.mouth-shape {
+  transition: opacity 60ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mouth-shape {
+    transition: none;
+  }
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 24px;
+}
+.skeleton-card > div,
+.skeleton-card > span {
+  display: block;
+  background: linear-gradient(
+    100deg,
+    var(--border) 20%,
+    var(--surface) 50%,
+    var(--border) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 10px;
+}
+.skeleton-card > div {
+  aspect-ratio: 3 / 4;
+}
+.skeleton-card > span {
+  height: 12px;
+  margin-top: 12px;
+  width: 85%;
+}
+.skeleton-card > span:last-child {
+  width: 50%;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card > div,
+  .skeleton-card > span {
+    animation: none;
+  }
+}
+

@@ -1,0 +1,129 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 30px 0;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+}
+.stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.stat strong {
+  display: block;
+  font-family: "DM Serif Display", serif;
+  font-size: 35px;
+  margin-top: 10px;
+}
+.chart {
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+.chart > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.chart > div > div {
+  background: #a4bfa3;
+  border-radius: 5px 5px 0 0;
+  width: 35px;
+}
+.admin-book {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.admin-book .cover {
+  width: 70px;
+  flex-shrink: 0;
+}
+.admin-book .cover:not(img) {
+  padding: 8px;
+}
+.admin-book .cover strong {
+  font-size: 10px;
+}
+.admin-book .cover small,
+.admin-book .cover svg {
+  display: none;
+}
+.admin-book-main {
+  flex: 1;
+}
+.admin-book-main p {
+  font-size: 13px;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.actions button {
+  font-size: 12px;
+}
+progress {
+  display: block;
+  width: 100%;
+  height: 7px;
+  margin-top: 10px;
+  accent-color: #6e9673;
+}
+.dropzone {
+  border: 2px dashed #b7cbb5;
+  border-radius: 14px;
+  text-align: center;
+  padding: 35px;
+  color: var(--green);
+  cursor: pointer;
+}
+.dropzone span {
+  font-weight: 400;
+  color: var(--muted);
+}
+.dropzone input {
+  max-width: 250px;
+  margin: auto;
+}
+.dragging {
+  background: var(--soft);
+}
+.cover-preview {
+  max-width: 140px;
+  border-radius: 8px;
+}
+.list details,
+.user-row {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.list details:last-child,
+.user-row:last-child {
+  border: 0;
+}
+.list summary {
+  cursor: pointer;
+}
+.list summary small {
+  display: block;
+  margin-top: 8px;
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.user-row .badge {
+  margin-left: auto;
+}

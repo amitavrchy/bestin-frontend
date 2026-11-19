@@ -1,0 +1,8 @@
+.ui-spinner { display: inline-block; width: 1.2rem; height: 1.2rem; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: ui-spin .8s linear infinite; }
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+.ui-popover { position: relative; }
+.ui-popover > .panel { position: absolute; z-index: 5; min-width: 12rem; }
+dialog { border: 0; border-radius: var(--radius, 16px); padding: 1.5rem; max-width: min(90vw, 36rem); color: inherit; background: var(--surface, white); }
+dialog::backdrop { background: #1e2527a0; }
+@media (prefers-reduced-motion: reduce) { .ui-spinner { animation-duration: 2s; } }
+

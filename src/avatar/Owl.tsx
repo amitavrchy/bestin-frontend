@@ -11,7 +11,12 @@ export function Owl({
   shape: VisemeId;
   blink: boolean;
 }) {
-  const open = shape !== "X" && shape !== "A";
+  const beaks: Record<VisemeId, { width: number; height: number }> = {
+    X: { width: 10, height: 4 }, A: { width: 12, height: 5 },
+    B: { width: 13, height: 8 }, C: { width: 11, height: 12 },
+    D: { width: 12, height: 16 }, E: { width: 15, height: 9 },
+    F: { width: 6, height: 8 }, G: { width: 13, height: 6 }, H: { width: 8, height: 14 },
+  };
   return (
     <svg
       className={`avatar avatar-${expression}`}
@@ -93,19 +98,12 @@ export function Owl({
           <circle cx="181" cy="157" r="28" />
           <path d="M147 155 Q150 151 153 155 M91 152 L78 148 M209 152 L222 148" />
         </g>
-        <path
-          d={
-            open
-              ? "M139 187 Q150 182 161 187 L150 204Z"
-              : "M139 187 Q150 183 161 187 L150 195Z"
-          }
-          fill="#c58b48"
-          stroke="#98653c"
-          strokeWidth="2"
-        />
-        {open && (
-          <path d="M144 190 Q150 194 156 190 L150 199Z" fill="#6e3939" />
-        )}
+        {(Object.entries(beaks) as [VisemeId, { width: number; height: number }][]).map(([id, dimensions]) => (
+          <g key={id} className="mouth-shape" opacity={shape === id ? 1 : 0}>
+            <path d={`M${150-dimensions.width} 187 Q150 182 ${150+dimensions.width} 187 L150 ${190+dimensions.height}Z`} fill="#c58b48" stroke="#98653c" strokeWidth="2" />
+            {dimensions.height > 6 && <path d={`M${150-dimensions.width+4} 190 Q150 193 ${150+dimensions.width-4} 190 L150 ${187+dimensions.height}Z`} fill="#6e3939" />}
+          </g>
+        ))}
         <path
           d="M98 213 Q111 227 126 229 M202 213 Q189 227 174 229 M130 244 Q150 251 170 244"
           fill="none"

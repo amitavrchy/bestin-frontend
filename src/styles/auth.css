@@ -1,0 +1,25 @@
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.auth-art {
+  background: #e8efe2;
+  padding: 35px 8%;
+  overflow: hidden;
+  color: #3c6048;
+}
+.auth-art .brand {
+  margin-bottom: 60px;
+}
+.auth-art h1 {
+  font-size: 55px;
+  line-height: 1.05;
+}
+.auth-art > div:not(.stage) {
+  max-width: 460px;
+}
+.auth-art p {
+  line-height: 1.6;
+}
+.auth-art 

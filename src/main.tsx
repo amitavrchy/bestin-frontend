@@ -9,6 +9,17 @@ import {
 import App from "./App";
 import { AuthProvider, SettingsProvider } from "./lib/state";
 import "./index.css";
+import "./styles/shell.css";
+import "./styles/library.css";
+import "./styles/shared.css";
+import "./styles/auth.css";
+import "./styles/avatar.css";
+import "./styles/chat.css";
+import "./styles/admin.css";
+import "./styles/responsive.css";
+import "./styles/ui.css";
+import "./styles/scene-effects.css";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider
