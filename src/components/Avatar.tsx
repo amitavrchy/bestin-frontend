@@ -5,76 +5,7 @@ import { Owl } from "../avatar/Owl";
 export { visemeAt, useLipSync } from "../avatar/useLipSync";
 export type Expression =
   "idle" | "listening" | "thinking" | "speaking" | "happy" | "confused";
-const mouths: Record<VisemeId, React.ReactNode> = {
-  X: (
-    <path
-      d="M139 195 Q150 201 161 195"
-      fill="none"
-      stroke="#783d3b"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
-  ),
-  A: <path d="M140 196 Q150 192 160 196 Q150 201 140 196" fill="#713e40" />,
-  B: (
-    <path
-      d="M137 194 Q150 190 163 194 Q159 204 150 204 Q141 204 137 194"
-      fill="#67363a"
-    />
-  ),
-  C: (
-    <>
-      <path
-        d="M139 193 Q150 188 161 193 Q162 207 150 208 Q138 207 139 193"
-        fill="#633238"
-      />
-      <path d="M142 194 Q150 196 158 194" stroke="#fff6e7" strokeWidth="3" />
-    </>
-  ),
-  D: (
-    <>
-      <ellipse cx="150" cy="199" rx="12" ry="14" fill="#633238" />
-      <path d="M141 192 Q150 195 159 192" stroke="#fff6e7" strokeWidth="3" />
-      <path d="M144 208 Q150 202 156 208" fill="#dd777b" />
-    </>
-  ),
-  E: (
-    <>
-      <path
-        d="M135 194 Q150 189 165 194 Q160 204 150 204 Q140 204 135 194"
-        fill="#633238"
-      />
-      <path d="M139 194 Q150 197 161 194" stroke="#fff6e7" strokeWidth="3" />
-    </>
-  ),
-  F: (
-    <>
-      <ellipse cx="150" cy="198" rx="7" ry="8" fill="#a95d5d" />
-      <ellipse cx="150" cy="198" rx="3.5" ry="5" fill="#633238" />
-    </>
-  ),
-  G: (
-    <>
-      <path
-        d="M138 194 Q150 190 162 194 L159 200 Q150 204 141 200Z"
-        fill="#793d40"
-      />
-      <path d="M141 195 H159" stroke="#fff6e7" strokeWidth="3" />
-      <path
-        d="M142 202 Q150 206 158 202"
-        fill="none"
-        stroke="#c56f70"
-        strokeWidth="2"
-      />
-    </>
-  ),
-  H: (
-    <>
-      <ellipse cx="150" cy="199" rx="9" ry="12" fill="#633238" />
-      <path d="M146 206 Q150 202 154 206" stroke="#df8888" strokeWidth="3" />
-    </>
-  ),
-};
+import { mouths } from "../avatar/mouths/mouths";
 const EMPTY_VISEMES: Viseme[] = [];
 export function Avatar({
   audio = null,
@@ -114,6 +45,7 @@ export function Avatar({
           <stop stopColor="#ffe0bd" />
           <stop offset="1" stopColor="#d99b7f" />
         </linearGradient>
+        <radialGradient id="iris"><stop stopColor="#b3aa72" /><stop offset=".65" stopColor="#52786c" /><stop offset="1" stopColor="#304c47" /></radialGradient>
         <linearGradient id="hair" x2="1" y2="1">
           <stop stopColor="#694940" />
           <stop offset="1" stopColor="#362b30" />
@@ -188,6 +120,8 @@ export function Avatar({
           strokeWidth="4"
           strokeLinecap="round"
         />
+        <path d="M97 100 Q113 63 144 57 M103 108 Q132 85 161 75 M111 104 Q145 91 173 70 M193 83 Q205 107 204 128" fill="none" stroke="#d4a28c" strokeWidth="1.4" opacity=".28" strokeLinecap="round" />
+        <path d="M103 205 Q117 233 150 241 Q183 233 197 205 Q189 239 150 251 Q111 239 103 205Z" fill="#a9665a" opacity=".13" />
         <path
           d="M96 161 Q100 188 107 206 M204 161 Q200 188 193 206"
           fill="none"
@@ -228,10 +162,14 @@ export function Avatar({
           />
           {!blink && (
             <>
-              <circle cx="125" cy="153" r="5" fill="#496459" />
-              <circle cx="177" cy="153" r="5" fill="#496459" />
+              <circle cx="125" cy="153" r="5" fill="url(#iris)" />
+              <circle cx="125" cy="153" r="2.4" fill="#263a35" />
+              <circle cx="177" cy="153" r="5" fill="url(#iris)" />
+              <circle cx="177" cy="153" r="2.4" fill="#263a35" />
               <circle cx="126" cy="151" r="1.8" fill="white" />
               <circle cx="178" cy="151" r="1.8" fill="white" />
+              <circle cx="123" cy="155" r=".8" fill="#fff" opacity=".8" />
+              <circle cx="175" cy="155" r=".8" fill="#fff" opacity=".8" />
             </>
           )}
         </g>
@@ -242,6 +180,7 @@ export function Avatar({
           strokeWidth="2"
           strokeLinecap="round"
         />
+        <path d="M112 159 Q124 166 136 159 M164 159 Q176 166 188 159 M112 146 l-3 -3 M115 144 l-2 -3 M185 144 l2 -3 M188 146 l3 -3" fill="none" stroke="#79524a" strokeWidth="1.2" strokeLinecap="round" opacity=".65" />
         <path
           d="M149 155 Q145 173 151 175 L155 174"
           fill="none"
