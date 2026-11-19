@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { api, ApiError, json } from "../../lib/api";
 import { Stage } from "../../components/Stage";
-import { useSettings } from "../../lib/state";
+import { useSettings } from "../../lib/contexts";
 import type { Book, Conversation, Message, Speech } from "../../lib/types";
 import { SettingsForm } from "../../pages/Common";
 type Recognition = {
@@ -39,6 +39,7 @@ export function ChatPage() {
   const [recording, setRecording] = useState(false);
   const [error, setError] = useState("");
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [speech, setSpeech] = useState<Speech | null>(null);
   const [speechMessage, setSpeechMessage] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -69,7 +70,7 @@ export function ChatPage() {
     [audio],
   );
   useEffect(() => {
-    if (audio) audio.muted = settings.mute;
+    if (audioRef.current) audioRef.current.muted = settings.mute;
   }, [audio, settings.mute]);
   useEffect(
     () => () => {
@@ -79,7 +80,7 @@ export function ChatPage() {
     },
     [],
   );
-  function playSpeech(s: Speech, auto = true, messageId: number | null = null) {
+  const playSpeech = useCallback((s: Speech, auto = true, messageId: number | null = null) => {
     audio?.pause();
     if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
     const bytes = Uint8Array.from(atob(s.audio_base64), (c) => c.charCodeAt(0));
@@ -94,10 +95,11 @@ export function ChatPage() {
     setSpeech(s);
     setSpeechMessage(messageId);
     setTime(0);
+    audioRef.current = a;
     setAudio(a);
     if (auto && settings.autoplay && !settings.mute)
       void a.play().catch(() => setError("Press play to hear the answer."));
-  }
+  }, [audio, settings.autoplay, settings.mute]);
   useEffect(() => {
     if (book && !greeted.current) {
       greeted.current = true;
@@ -115,7 +117,7 @@ export function ChatPage() {
           })
           .catch(() => {});
     }
-  }, [book]);
+  }, [book, playSpeech, settings.autoplay, settings.mute, settings.voice]);
   async function ask(question: string) {
     if (!question.trim() || busy) return;
     speechRequest.current += 1;
@@ -293,7 +295,7 @@ export function ChatPage() {
             <button
               onClick={() => {
                 if (audio) {
-                  audio.currentTime = 0;
+                  if (audioRef.current) audioRef.current.currentTime = 0;
                   void audio.play();
                 }
               }}
@@ -324,7 +326,7 @@ export function ChatPage() {
             <button
               onClick={() => {
                 audio?.pause();
-                if (audio) audio.currentTime = 0;
+                if (audio) if (audioRef.current) audioRef.current.currentTime = 0;
               }}
               disabled={!audio}
             >

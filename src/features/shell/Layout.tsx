@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { BookOpen, LayoutDashboard, LogOut, Settings as SettingsIcon, Library, Users, MessageSquare } from "lucide-react";
-import { useAuth } from "../../lib/state";
+import { useAuth } from "../../lib/contexts";
 export function Layout() {
   const { user, signOut } = useAuth();
   return (

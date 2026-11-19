@@ -2,13 +2,6 @@ import { useState, type CSSProperties } from "react";
 import { SceneArtwork } from "../scenes/SceneArtwork";
 import { Avatar, type Expression } from "./Avatar";
 import type { Viseme, VisemeId } from "../lib/types";
-export const backgrounds = [
-  "library",
-  "night",
-  "garden",
-  "studio",
-  "rain",
-] as const;
 export function Stage({
   background,
   character,

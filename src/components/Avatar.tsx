@@ -2,7 +2,6 @@ import { useAvatarMotion } from "../avatar/useAvatarMotion";
 import type { Viseme, VisemeId } from "../lib/types";
 import { useLipSync } from "../avatar/useLipSync";
 import { Owl } from "../avatar/Owl";
-export { visemeAt, useLipSync } from "../avatar/useLipSync";
 export type Expression =
   "idle" | "listening" | "thinking" | "speaking" | "happy" | "confused";
 import { mouths } from "../avatar/mouths/mouths";

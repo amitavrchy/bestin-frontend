@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { useAuth } from "../../lib/state";
+import { useAuth } from "../../lib/contexts";
 import type { Book } from "../../lib/types";
 import { Cover } from "./Cover";
 import { Skeleton } from "../../components/ui/Skeleton";

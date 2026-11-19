@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, json } from "../../lib/api";
-import { useSettings } from "../../lib/state";
-import { backgrounds } from "../../components/Stage";
+import { useSettings } from "../../lib/contexts";
+import { backgrounds } from "../../scenes/backgrounds";
 import type { Voice } from "../../lib/types";
 export function SettingsForm() {
   const { settings, update } = useSettings();

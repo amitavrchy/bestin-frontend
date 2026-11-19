@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../../lib/state";
+import { useAuth } from "../../lib/contexts";
 import { Stage } from "../../components/Stage";
 export function AuthPage({ register = false }: { register?: boolean }) {
   const { user, signIn } = useAuth();

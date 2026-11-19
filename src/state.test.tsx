@@ -9,7 +9,8 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
-import { AuthProvider, SettingsProvider, useSettings } from "./lib/state";
+import { AuthProvider, SettingsProvider } from "./lib/state";
+import { useSettings } from "./lib/contexts";
 import { Guard } from "./pages/Common";
 
 afterEach(() => {

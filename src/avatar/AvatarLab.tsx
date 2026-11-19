@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Stage, backgrounds } from "../components/Stage";
+import { Stage } from "../components/Stage";
+import { backgrounds } from "../scenes/backgrounds";
 import { VISEMES, type VisemeId, type Viseme } from "../lib/types";
 import { visemeAt } from "./useLipSync";
 import demoVisemes from "./demo-visemes.json";

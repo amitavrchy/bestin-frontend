@@ -1,5 +1,5 @@
-export * from "./Dashboard";
-export * from "./AdminBooks";
-export * from "./BookEditor";
-export * from "./Questions";
-export * from "./UsersPage";
+export { Dashboard } from "./Dashboard";
+export { AdminBooks } from "./AdminBooks";
+export { BookEditor } from "./BookEditor";
+export { Questions } from "./Questions";
+export { UsersPage } from "./UsersPage";

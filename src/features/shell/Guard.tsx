@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../lib/state";
+import { useAuth } from "../../lib/contexts";
 export function Guard({ admin = false }: { admin?: boolean }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="center">Opening your library…</div>;

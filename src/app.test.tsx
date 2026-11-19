@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { Avatar, visemeAt } from "./components/Avatar";
+import { Avatar } from "./components/Avatar";
+import { visemeAt } from "./avatar/useLipSync";
 import { api } from "./lib/api";
 import { Stage } from "./components/Stage";
 

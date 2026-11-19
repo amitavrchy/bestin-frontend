@@ -1,21 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  createContext,
-  useContext,
   useEffect,
   useState,
   type ReactNode,
 } from "react";
 import { api, json } from "./api";
 import type { User } from "./types";
+import { AuthContext, SettingsContext, type Settings } from "./contexts";
 type AuthResult = { access_token: string; user: User };
-type AuthContextType = {
-  user: User | null;
-  loading: boolean;
-  signIn: (email: string, password: string, name?: string) => Promise<void>;
-  signOut: () => void;
-};
-const AuthContext = createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
@@ -54,17 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-export const useAuth = () => useContext(AuthContext);
-export type Settings = {
-  voice: string;
-  mute: boolean;
-  autoplay: boolean;
-  style: "concise" | "detailed";
-  character: string;
-  background: string;
-  theme: "light" | "dark";
-  captions: boolean;
-};
 const defaults: Settings = {
   voice: "en-US-AriaNeural",
   mute: false,
@@ -75,10 +56,6 @@ const defaults: Settings = {
   theme: "light",
   captions: true,
 };
-const SettingsContext = createContext<{
-  settings: Settings;
-  update: (v: Partial<Settings>) => void;
-}>(null!);
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(() => {
     try {
@@ -102,4 +79,4 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     </SettingsContext.Provider>
   );
 }
-export const useSettings = () => useContext(SettingsContext);
+
