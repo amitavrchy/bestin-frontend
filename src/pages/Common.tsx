@@ -1,4 +1,7 @@
-import { useState, type FormEvent } from "react";
+import demoVisemes from "../avatar/demo-visemes.json";
+import { visemeAt } from "../avatar/useLipSync";
+import type { Viseme } from "../types";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -409,17 +412,25 @@ export function AvatarLab() {
   const [background, setBackground] = useState("library");
   const [character, setCharacter] = useState("sage");
   const [playing, setPlaying] = useState(false);
-  function sample() {
-    setPlaying(true);
-    let i = 0;
-    const timer = setInterval(() => {
-      setShape(VISEMES[i++ % VISEMES.length]);
-      if (i >= VISEMES.length * 2) {
-        clearInterval(timer);
+  useEffect(() => {
+    if (!playing) return;
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = (now - start) / 1000;
+      if (elapsed >= 2) {
         setShape("X");
         setPlaying(false);
+        return;
       }
-    }, 220);
+      setShape(visemeAt(demoVisemes as Viseme[], elapsed));
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [playing]);
+  function sample() {
+    setPlaying(true);
   }
   return (
     <div className="page narrow">
