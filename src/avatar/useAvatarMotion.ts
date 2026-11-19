@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { nextBlink as scheduleBlink } from "./motion";
 
 /** Small frame-driven state machine; the browser supplies the animation clock. */
 export function useAvatarMotion() {
@@ -18,8 +19,9 @@ export function useAvatarMotion() {
         blinkEnd = now + 130;
         if (secondBlink) secondBlink = 0;
         else {
-          if (Math.random() < 0.2) secondBlink = now + 260;
-          nextBlink = now + 2500 + Math.random() * 4000;
+          const scheduled = scheduleBlink(now);
+          secondBlink = scheduled.double;
+          nextBlink = scheduled.next;
         }
         setMotion((previous) => ({ ...previous, blink: true }));
       }

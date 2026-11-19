@@ -1,3 +1,6 @@
+import { useRef } from "react";
+import { useAvatarDynamics } from "../../useAvatarDynamics";
+import type { Viseme, WordTime } from "../../../lib/types";
 import type { Expression } from "../../../components/Avatar";
 import type { VisemeId } from "../../../lib/types";
 
@@ -6,11 +9,19 @@ export function Sage({
   expression,
   shape,
   blink,
+  audio = null,
+  words = [],
+  visemes = [],
 }: {
   expression: Expression;
   shape: VisemeId;
   blink: boolean;
+  audio?: HTMLAudioElement | null;
+  words?: WordTime[];
+  visemes?: Viseme[];
 }) {
+  const ref = useRef<SVGSVGElement>(null);
+  useAvatarDynamics(ref, expression, audio, words, visemes);
   const beaks: Record<VisemeId, { width: number; height: number }> = {
     X: { width: 10, height: 4 }, A: { width: 12, height: 5 },
     B: { width: 13, height: 8 }, C: { width: 11, height: 12 },
@@ -19,6 +30,7 @@ export function Sage({
   };
   return (
     <svg
+      ref={ref}
       className={`avatar avatar-${expression}`}
       viewBox="0 0 300 360"
       role="img"
@@ -76,6 +88,7 @@ export function Sage({
           fill="#f2dfbf"
         />
         <path
+          className="eyebrows"
           d="M98 111 Q119 94 142 118 M158 118 Q181 94 202 111"
           fill="none"
           stroke="#9b6b55"

@@ -1,3 +1,6 @@
+import { useRef } from "react";
+import { useAvatarDynamics } from "../../useAvatarDynamics";
+import type { WordTime } from "../../../lib/types";
 import { useAvatarMotion } from "../../useAvatarMotion";
 import type { Viseme, VisemeId } from "../../../lib/types";
 import { useLipSync } from "../../useLipSync";
@@ -5,6 +8,7 @@ import { useLipSync } from "../../useLipSync";
 export type Expression =
   "idle" | "listening" | "thinking" | "speaking" | "happy" | "confused";
 import { mouths } from "../../mouths/mouths";
+const EMPTY_WORDS: WordTime[] = [];
 const EMPTY_VISEMES: Viseme[] = [];
 export function Bestin({
   audio = null,
@@ -12,13 +16,17 @@ export function Bestin({
   expression = "idle",
   character = "sage",
   manual,
+  words = EMPTY_WORDS,
 }: {
   audio?: HTMLAudioElement | null;
   visemes?: Viseme[];
   expression?: Expression;
   character?: string;
   manual?: VisemeId;
+  words?: WordTime[];
 }) {
+  const ref = useRef<SVGSVGElement>(null);
+  useAvatarDynamics(ref, expression, audio, words, visemes);
   const shape = useLipSync(audio, visemes);
   const { blink, gaze } = useAvatarMotion();
   const isRafi = false;
@@ -30,6 +38,7 @@ export function Bestin({
         : "#c79440";
   return (
     <svg
+      ref={ref}
       className={`avatar avatar-${expression}`}
       viewBox="0 0 300 360"
       role="img"

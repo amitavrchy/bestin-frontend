@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { SceneArtwork } from "../scenes/SceneArtwork";
 import { Avatar, type Expression } from "./Avatar";
-import type { Viseme, VisemeId } from "../lib/types";
+import type { Viseme, VisemeId, WordTime } from "../lib/types";
 export function Stage({
   background,
   character,
@@ -9,6 +9,8 @@ export function Stage({
   visemes,
   expression,
   manual,
+  words,
+  children,
 }: {
   background: string;
   character: string;
@@ -16,6 +18,8 @@ export function Stage({
   visemes?: Viseme[];
   expression?: Expression;
   manual?: VisemeId;
+  words?: WordTime[];
+  children?: React.ReactNode;
 }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   return (
@@ -51,7 +55,10 @@ export function Stage({
         visemes={visemes}
         expression={expression}
         manual={manual}
+        words={words}
       />
+      {expression === "thinking" && <div className="thought-dots" aria-hidden="true"><i /><i /><i /></div>}
+      {children}
       <div className="stage-caption">
         YOUR READING COMPANION{" "}
         <strong>

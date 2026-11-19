@@ -280,6 +280,7 @@ export function ChatPage() {
             character={settings.character}
             audio={audio}
             visemes={speech?.visemes}
+            words={speech?.words}
             expression={
               recording
                 ? "listening"
@@ -289,7 +290,9 @@ export function ChatPage() {
                     ? "speaking"
                     : "idle"
             }
-          />
+          >
+            {settings.captions && playing && speech?.words.length ? <div className="stage-subtitles" aria-live="off">{speech.words.filter(word => time >= word.start - 1.5 && time <= word.end + 1.5).map((word, index) => <span className={time >= word.start && time <= word.end ? "active" : ""} key={`${word.start}-${index}`}>{word.word} </span>)}</div> : null}
+          </Stage>
           <div className="playback">
             <button
               onClick={() => {
